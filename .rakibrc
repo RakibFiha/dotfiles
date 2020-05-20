@@ -508,10 +508,18 @@ random-strings(){
 
 play-it(){ # play anything, ie youtube playlist, mp3, mp4 etc from terminal
  if [[ "$1" == "loop" ]] && [[ "$2" ]]; then
-  ( mpv --loop "$2" & )
+  ( mpv --loop "$2" > /dev/null 2>&1 & 
+    disown )
  else
-  ( mpv "$1" & )
+  ( mpv "$1" > /dev/null 2>&1 & 
+    disown )
  fi
+ if [[ ! "$1" ]]; then
+   echo "Usage: ${FUNCNAME[0]} <things-to-play-i.e.youtube-links>"
+   echo "For example: ${FUNCNAME[0]} https://www.youtube.com/watch?v=_2quiyHfJQw"
+   echo "You can also pass youtube playlist as arg"
+   echo "Use --loop to loop around"
+   echo "Upgrade youtube-dl with pip if you have problem playing videos with 'sudo pip install --upgrade youtube_dl'"
 }
 
 open-tmux(){
