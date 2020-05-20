@@ -520,6 +520,7 @@ play-it(){ # play anything, ie youtube playlist, mp3, mp4 etc from terminal
    echo "You can also pass youtube playlist as arg"
    echo "Use --loop to loop around"
    echo "Upgrade youtube-dl with pip if you have problem playing videos with 'sudo pip install --upgrade youtube_dl'"
+ fi
 }
 
 open-tmux(){
