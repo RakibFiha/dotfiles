@@ -564,12 +564,12 @@ install(){
 
   curDir=$(pwd)
   echo $curDir
-  curl -sLf https://spacevim.org/install.sh | bash
-  ln -sr ${curDir}/.SpaceVim ${HOME}/.SpaceVim
-  ln -sr ${curDir}/.SpaceVim.d ${HOME}/.SpaceVim.d
-  ln -sr ${curDir}/.tmux.conf.rak ${HOME}/.tmux.conf.rak
+  ln -s ${curDir}/.SpaceVim ${HOME}/.SpaceVim
+  ln -s ${curDir}/.SpaceVim.d ${HOME}/.SpaceVim.d
+  ln -s ${curDir}/.tmux.conf.rak ${HOME}/.tmux.conf.rak
   local fl=$(basename ${BASH_SOURCE[0]})
-  ln -sr ${curDir}/${fl} ${HOME}/${fl}
+  ln -s ${curDir}/${fl} ${HOME}/${fl}
+  curl -sLf https://spacevim.org/install.sh | bash
 
   sudo apt update && sudo apt install jq tmux tty-clock -y
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
