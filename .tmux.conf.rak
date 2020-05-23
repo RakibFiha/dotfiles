@@ -1,0 +1,7 @@
+#https://stackoverflow.com/questions/5609192/how-to-set-up-tmux-so-that-it-starts-up-with-specified-windows-opened
+new-session -A -s 'rakib'
+neww 'nvim'
+split -v -p 15 'exec bash' # open slack and dont close the pane
+splitw -h -p 10 'tty-clock -t'
+#splitw -v -p 30
+select-pane -t 0
