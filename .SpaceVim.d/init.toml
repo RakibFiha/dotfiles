@@ -54,6 +54,9 @@ name = "lang#lua"
 [[layers]]
 name = "colorscheme"
 
+[[layers]]
+name = "lang#markdown"
+
 [options]
 colorscheme = "palenight"
 colorscheme_bg = "dark"
