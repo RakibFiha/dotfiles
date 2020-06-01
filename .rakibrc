@@ -514,12 +514,14 @@ local tmuxSession="rakib"
   # https://unix.stackexchange.com/questions/43601/how-can-i-set-my-default-shell-to-start-up-tmux
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   # https://unix.stackexchange.com/questions/103898/how-to-start-tmux-with-attach-if-a-session-exists/176885#176885
-  if [[ $(tmux ls | grep attached | grep -w "${tmuxSession}") ]]; then
-    tmux attach -t "${tmuxSession}" # do this if tmuxSession is not attached
-  elif [[ ! $(tmux ls | grep -w "${tmuxSession}" ) ]]; then
+  if [[ ! $(tmux ls | grep -w "${tmuxSession}" ) ]]; then
+    tmux new -s rakib -d
     tmux source-file $HOME/.tmux.conf.rak # do this if tmuxSession is not created
   else
-      : # do this if tmuxSession is already created and attached
+    # do this if tmuxSession is already created and attached
+    if [[ ! $(tmux ls | grep -w attached | grep -w "${tmuxSession}") ]]; then
+      tmux attach -t "${tmuxSession}" # do this if tmuxSession is not attached
+    fi
   fi
 fi
 }
