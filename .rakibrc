@@ -549,7 +549,7 @@ compcpp(){
     echo "For example, ${FUNCNAME[0]} foo.cpp foo ## Will compile foo.cpp and save executable as foo"
     echo "For example, ${FUNCNAME[0]} bar.cpp bar -e ## Will compile bar.cpp as bar and execute at the same time"
   else
-    g++ -W -Wall -pedantic -o ${output} -p ${input}
+    g++ -W -Wall -pedantic -o ${output} -p ${input} -Qunused-arguments
       if (( $? == 0 )); then
         if [[ "$exc" == "exc" ]] || [[ "$exc" == "-e" ]]; then
         ./${output}
