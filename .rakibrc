@@ -537,6 +537,7 @@ compcpp(){
   local input="$1"
   local output=${2:-"a.out"}
   local exc=${3:-"false"}
+  output="$(echo ${output} | sed 's/[-%+=$!#<>&]//')"
   
   if [[ "${output}" == "exc" ]] || [[ "${output}" == "-e" ]]; then
     exc="exc"
