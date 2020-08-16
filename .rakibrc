@@ -533,6 +533,30 @@ if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] &&
 fi
 }
 
+compcpp(){
+  local input="$1"
+  local output=${2:-"a.out"}
+  local exc=${3:-"false"}
+  
+  if [[ "${output}" == "exc" ]] || [[ "${output}" == "-e" ]]; then
+    exc="exc"
+    output="a.out"
+  fi
+
+  if [[ "$input" == "-h" ]] || [[ "$input" == "-help" ]]; then
+    echo "Usage: ${FUNCNAME[0]} < Input file > < Optional: Output, Default: a.out > < Optional: exc | -e, Default:false >"
+    echo "For example, ${FUNCNAME[0]} foobar.cpp -e ## Will compile foobar.cpp and execute"
+    echo "For example, ${FUNCNAME[0]} foo.cpp foo ## Will compile foo.cpp and save executable as foo"
+    echo "For example, ${FUNCNAME[0]} bar.cpp bar -e ## Will compile bar.cpp as bar and execute at the same time"
+  else
+    g++ -W -Wall -pedantic -o ${output} -p ${input}
+      if (( $? == 0 )); then
+        if [[ "$exc" == "exc" ]] || [[ "$exc" == "-e" ]]; then
+        ./${output}
+        fi
+      fi
+  fi
+}
 
 source_settings(){
 
