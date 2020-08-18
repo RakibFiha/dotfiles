@@ -533,6 +533,50 @@ if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] &&
 fi
 }
 
+organise_files_by_extension(){
+
+## Will create folder by extension and move all files in them
+## Usage: Organise <path> <showlog>
+## Organise your folder by extensions
+## For example ./organise ~/Downloads
+
+path="${1:-$(pwd)}"
+debug="${2:-"false"}"
+
+  getext(){
+    filename="$1"
+    case $filename in
+      (*.*) local ext=${filename##*.} && echo ${ext};;
+    esac
+  }
+  
+  __help__(){
+  echo "Usage: $0 <path> <Optional:showlog>"
+  echo "Usage: $0 # will organise current path by extension"
+  echo "Usage: $0 ~/Downloads # will organise Downloads by extension"
+  }
+
+  __main__(){
+  if [[ "$path" == "-h" ]] || [[ "$path" == "-help" ]]; then
+    __help__
+  else
+    if [[ -d ${path} ]]; then
+    for file in ${path}/*; do
+      if [[ -f ${file} ]]; then
+        local extension="$(getext "$file")"
+        local extpath="${path}/${extension}"
+        [[ "${extension}" == "" ]] && continue
+        mkdir -p ${extpath}
+        mv "${file}" ${extpath}/ && [[ "${debug}" == "showlog" ]] && echo "${file} will go to: $extpath"
+      fi
+      done
+    fi
+  fi
+  }
+
+  __main__
+}
+
 compcpp(){
   local input="$1"
   local output=${2:-"a.out"}
