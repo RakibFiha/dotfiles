@@ -11,7 +11,7 @@
     # set spacevim theme. by default colorscheme layer is not loaded,
     # if you want to use more colorscheme, please load the colorscheme
     # layer
-    colorscheme = "SpaceVim"
+    colorscheme = "desert"
     colorscheme_bg = "dark"
     # Disable guicolors in basic mode, many terminal do not support 24bit
     # true colors
@@ -37,6 +37,20 @@ default_height = 20
 
 [[layers]]
 name = "lang#c"
+
+[[layers]]
+name = "lang#rust"
+
+[[layers]]
+name = "lang#javascript"
+auto_fix = true
+enable_flow_syntax = true
+
+[[custom_plugins]]
+name = "MaxMEllon/vim-jsx-pretty"
+merged = false
+
+[[layers]]
 name = "git"
 
 [[layers]]
@@ -46,18 +60,65 @@ name = "lang#python"
 name = "lang#python3"
 
 [[layers]]
-name = "lang#javascript"
-
-[[layers]]
 name = "lang#lua"
 
 [[layers]]
+name = "core#statusline"
 name = "colorscheme"
 
-[[layers]]
-name = "lang#markdown"
-
 [options]
+    # options for statusline
+    # Set the statusline separators of statusline, default is "arrow"
+    statusline_separator = "arrow"
+    # Set the statusline separators of inactive statusline
+    statusline_inactive_separator = "bar"
+
+    # Set SpaceVim buffer index type
+    buffer_index_type = 4
+    # 0: 1 ➛ ➊
+    # 1: 1 ➛ ➀
+    # 2: 1 ➛ ⓵
+    # 3: 1 ➛ ¹
+    # 4: 1 ➛ 1
+
+    # Enable/Disable show mode on statusline
+    enable_statusline_mode = true
+
+    # left sections of statusline
+    statusline_left_sections = [
+       'winnr',
+       'major mode',
+       'filename',
+       'fileformat',
+       'minor mode lighters',
+       'version control info',
+       'search status'
+    ]
+    # right sections of statusline
+    statusline_right_sections = [
+       'cursorpos',
+       'percentage',
+       'input method',
+       'date',
+       'time'
+    ]
+
+    #'winnr' window number
+    #'syntax checking'
+    #'filename' file name
+    #'fileformat' file format
+    #'major mode'
+    #'minor mode lighters'
+    #'cursorpos' cursor position
+    #'percentage' content range
+    #'date' date
+    #'time' time
+    #'whitespace' line number with trailing space at the end
+    #'battery status' battery status
+    #'input method' input method
+    #'search status' search index
+
+
 colorscheme = "palenight"
 colorscheme_bg = "dark"
 filetree_direction = "left"
