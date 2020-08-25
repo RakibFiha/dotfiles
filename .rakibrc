@@ -608,6 +608,8 @@ source_settings(){
 ## source in your bashrc or bash_profile
   alias tree="tree -CAFa -I 'CVS|*.*.package|.svn|.git' --dirsfirst"
   alias screensaver='for ((;;)); do echo -ne "\033[$((1+RANDOM%LINES));$((1+RANDOM%COLUMNS))H\033[$((RANDOM%2));3$((RANDOM%8))m$((RANDOM%10))"; sleep 0.1 ; done'
+  alias l='ls'
+  alias ll='ls -lai'
   [[ -f /usr/local/bin/shopt ]] && alias shopt='/usr/local/bin/shopt'
 # alias sudo='sudo -h 127.0.0.1' # https://askubuntu.com/a/1060349/900143
   [[ $(command -v nvim) ]] && alias vim="$(command -v nvim)"
