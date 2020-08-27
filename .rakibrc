@@ -516,6 +516,11 @@ play-it(){ # play anything, ie youtube playlist, mp3, mp4 etc from terminal
  fi
 }
 
+zeal(){
+  ( zeal "$@" > /dev/null 2>&1 &
+  disown )
+}
+
 open-tmux(){
 local tmuxSession="rakib"
   # https://unix.stackexchange.com/questions/43601/how-can-i-set-my-default-shell-to-start-up-tmux
