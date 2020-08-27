@@ -517,7 +517,7 @@ play-it(){ # play anything, ie youtube playlist, mp3, mp4 etc from terminal
 }
 
 zeal(){
-  ( zeal "$@" > /dev/null 2>&1 &
+  ( /usr/local/bin/zeal "$@" &
   disown )
 }
 
