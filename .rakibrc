@@ -238,6 +238,7 @@ elif [[ "$( uname )" == "Darwin" ]]; then
   {
     # https://askubuntu.com/questions/875812/in-terminal-how-do-you-run-a-sudo-command-with-an-at-the-end-without-prior-aut?noredirect=1&lq=1
     # sudo bash -c '/Applications/OmniDiskSweeper.app/Contents/MacOS/OmniDiskSweeper &' > /tmp/.omni 2>&1
+    sudo rm -rf /private/var/root/.Trash/*
     [[ "$(uname)" == "Darwin" ]] && sudo bash -c '/Applications/OmniDiskSweeper.app/Contents/MacOS/OmniDiskSweeper & '
   }
 
