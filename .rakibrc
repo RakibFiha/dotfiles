@@ -16,7 +16,7 @@ cxe()
 }
 
 mkfs.ext4(){
-  sudo $(brew --prefix e2fsprogs)/sbin/mkfsext4 "$@"
+  sudo $(brew --prefix e2fsprogs)/sbin/mkfs.ext4 "$@"
 }
 
 refresh()
