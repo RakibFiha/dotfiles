@@ -472,7 +472,7 @@ fd() {
 
 # fh - search in your command history and execute selected command
 fh() {
-  eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
+  eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//' | cut -d ' ' -f3- ) 
 }
 
 # ch - browse chrome history
@@ -532,12 +532,14 @@ local tmuxSession="rakib"
 if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
   # https://unix.stackexchange.com/questions/103898/how-to-start-tmux-with-attach-if-a-session-exists/176885#176885
   if [[ ! $(tmux ls | grep -w "${tmuxSession}" ) ]]; then
-    tmux new -s rakib -d
-    tmux source-file $HOME/.tmux.conf.rak # do this if tmuxSession is not created
+    tmux new -s ${tmuxSession} -d
+    tmux source-file $HOME/.tmuxsession.conf.rak # do this if tmuxSession is not created
+    tmux source-file $HOME/.tmux.conf.rak # source tmux config
   else
     # do this if tmuxSession is already created and attached
     if [[ ! $(tmux ls | grep -w attached | grep -w "${tmuxSession}") ]]; then
       tmux attach -t "${tmuxSession}" # do this if tmuxSession is not attached
+      tmux source-file $HOME/.tmux.conf.rak # source tmux config
     fi
   fi
 fi

@@ -1,11 +1,14 @@
-#https://stackoverflow.com/questions/5609192/how-to-set-up-tmux-so-that-it-starts-up-with-specified-windows-opened
-attach -t rakib
-#new-session -t 'rakib' -d
-neww 'nvim; exec bash'
-split -v -p 15 'exec bash' # open slack and dont close the pane
-splitw -h -p 10 'tty-clock -t; exec bash'
-#splitw -v -p 30
-select-pane -t 0
+# remap prefix from 'C-b' to 'C-a'
+unbind C-b
+set-option -g prefix C-a
+bind-key C-a send-prefix
+
+# Get time in 12 hour format
 set -g status-right "#[fg=black,bold]A, %d %b %Y %I:%M %p"
+
+# Quickly edit and reload #tmux configuration https://tinyurl.com/y29f2t2d
 bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded"
 bind-key M split-window -h "vim ~/.tmux.conf"
+
+# Enable mouse mode (tmux 2.1 and above)
+set -g mouse on
