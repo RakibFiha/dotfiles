@@ -6,3 +6,6 @@ split -v -p 15 'exec bash' # open slack and dont close the pane
 splitw -h -p 10 'tty-clock -t; exec bash'
 #splitw -v -p 30
 select-pane -t 0
+set -g status-right "#[fg=black,bold]A, %d %b %Y %I:%M %p"
+bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded"
+bind-key M split-window -h "vim ~/.tmux.conf"
