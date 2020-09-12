@@ -623,8 +623,8 @@ source_settings(){
   alias l='ls'
   alias ll='ls -lai'
   alias gcm='git commit -am'
-  alias gcp='git push origin'
-  alias gadd='git add'
+  alias gpo='git push origin'
+  alias ga='git add'
 
   [[ -f /usr/local/bin/shopt ]] && alias shopt='/usr/local/bin/shopt'
 # alias sudo='sudo -h 127.0.0.1' # https://askubuntu.com/a/1060349/900143
