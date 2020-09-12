@@ -3,6 +3,6 @@ attach -t rakib
 #new-session -t 'rakib' -d
 neww 'nvim; exec bash'
 split -v -p 15 'exec bash' # open slack and dont close the pane
-splitw -h -p 10 'tty-clock -t; exec bash'
+#splitw -h -p 10 'tty-clock -t; exec bash'
 #splitw -v -p 30
 select-pane -t 0
