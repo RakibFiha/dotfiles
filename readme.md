@@ -1,8 +1,8 @@
---- Using yabai as tiling window manager
+## tiling window manager (MacOS)
 
-Similar to chunkwm but more maintained
+--- Using `yabai` as tiling window manager. Similar to `chunkwm` but more maintained
 
-To install yabai, enable SIP without fs and debug
+To install `yabai`, enable SIP without fs and debug
 
 ```
 csrutil enable --without debug --without fs
@@ -48,10 +48,10 @@ Start yabai as a service
 `brew services start koekeishiya/formulae/yabai`
 
 
---- Install skhd (keyboard shortcuts)
+--- Install `skhd` (keyboard shortcuts) and `spectacle` (window manager)
 
 ```
-brew install koekeishiya/formulae/skhd && brew services start skhd
+brew install koekeishiya/formulae/skhd && brew services start skhd && brew cask install spectacle
 ```
 
 
