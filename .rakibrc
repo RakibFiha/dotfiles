@@ -641,6 +641,10 @@ source_settings(){
 # https://www.commandlinefu.com/commands/view/3858/commit-command-to-history-file-immedeately-after-execution
 # PROMPT_COMMAND="history -a"
 
+# spacevim python3
+export PYTHON3_HOST_PROG=$(command -v python3)
+export PYTHON_HOST_PROG=$(command -v python)
+
   export PROMPT_COMMAND="myPS1Prompt" ## using it to activate the PS1 prompt
   bind 'set show-all-if-ambiguous on'
   bind 'set menu-complete-display-prefix on'

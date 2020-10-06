@@ -23,64 +23,11 @@
   buffer_index_type = 4
   enable_tabline_filetype_icon = true
   enable_statusline_mode = false
-
-# Enable autocomplete layer
-[[layers]]
-  name = 'autocomplete'
-  auto-completion-return-key-behavior = "complete"
-  auto-completion-tab-key-behavior = "smart"
-
-[options]
+  bootstrap_before = 'myspacevim#before'
+  bootstrap_after = 'myspacevim#after'
   autocomplete_method = "ycm"
-
-[options]
   snippet_engine = "ultisnips"
 
-[[layers]]
-  name = 'shell'
-  default_position = 'bottom'
-  default_height = 20
-
-[[layers]]
-  name = "lang#c"
-
-[[layers]]
-  name = "lang#rust"
-  racer_cmd ="/Users/mdrakiburrahman/.cargo/bin/racer"
-
-[[layers]]
-  name = "lang#javascript"
-  auto_fix = true
-  enable_flow_syntax = true
-
-[[custom_plugins]]
-  name = "MaxMEllon/vim-jsx-pretty"
-  merged = false
-
-[[layers]]
-  name = "git"
-
-# Enable gtag layer
-[[layers]]
-  name = 'gtags'
-
-[[layers]]
-  name = 'VersionControl'
-
-[[layers]]
-  name = "lang#python"
-
-[[layers]]
-  name = "lang#python3"
-
-[[layers]]
-  name = "lang#lua"
-
-[[layers]]
-  name = "core#statusline"
-  name = "colorscheme"
-
-[options]
   # options for statusline
   # Set the statusline separators of statusline, default is "arrow"
   statusline_separator = "arrow"
@@ -137,3 +84,57 @@
   filetree_direction = "left"
   filemanager = "nerdtree"
   enable_vimfiler_gitstatus = true
+
+# Enable autocomplete layer
+[[layers]]
+  name = 'autocomplete'
+  auto-completion-return-key-behavior = "complete"
+  auto-completion-tab-key-behavior = "smart"
+
+[[layers]]
+  name = 'shell'
+  default_position = 'bottom'
+  default_height = 20
+
+[[layers]]
+  name = "lang#c"
+
+[[layers]]
+  name = "lang#rust"
+  racer_cmd ="/Users/mdrakiburrahman/.cargo/bin/racer"
+
+[[layers]]
+  name = "lang#javascript"
+  auto_fix = true
+  enable_flow_syntax = true
+
+[[custom_plugins]]
+  name = "MaxMEllon/vim-jsx-pretty"
+  merged = false
+
+[[layers]]
+  name = "git"
+
+# Enable gtag layer
+[[layers]]
+  name = 'gtags'
+
+[[layers]]
+  name = 'VersionControl'
+
+[[layers]]
+  name = "lang#python"
+  python_file_head = [
+      '#!/usr/bin/env python3',
+      '# -*- coding: utf-8 -*-',
+      '',
+      ''
+  ]
+
+[[layers]]
+  name = "lang#lua"
+
+[[layers]]
+  name = "core#statusline"
+  name = "colorscheme"
+

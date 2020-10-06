@@ -4,4 +4,3 @@ let g:loaded_python_provider = 1
 let g:spacevim_enable_guicolors = 0
 let g:jedi#force_py_version = 3
 let g:neomake_python_python_exe = 'python3'
-let g:enable_ycm = true
