@@ -30,6 +30,9 @@ name = 'autocomplete'
 auto-completion-return-key-behavior = "complete"
 auto-completion-tab-key-behavior = "smart"
 
+[options]
+    autocomplete_method = "ycm"
+
 [[layers]]
 name = 'shell'
 default_position = 'bottom'
@@ -40,6 +43,7 @@ name = "lang#c"
 
 [[layers]]
 name = "lang#rust"
+racer_cmd ="/Users/mdrakiburrahman/.cargo/bin/racer"
 
 [[layers]]
 name = "lang#javascript"
@@ -52,6 +56,13 @@ merged = false
 
 [[layers]]
 name = "git"
+
+# Enable gtag layer
+[[layers]]
+name = 'gtags'
+
+[[layers]]
+name = 'VersionControl'
 
 [[layers]]
 name = "lang#python"
