@@ -135,6 +135,9 @@
   name = "lang#lua"
 
 [[layers]]
+  name = "lsp"
+
+[[layers]]
   name = "core#statusline"
   name = "colorscheme"
 
