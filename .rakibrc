@@ -629,7 +629,7 @@ source_settings(){
 
   [[ -f /usr/local/bin/shopt ]] && alias shopt='/usr/local/bin/shopt'
 # alias sudo='sudo -h 127.0.0.1' # https://askubuntu.com/a/1060349/900143
-  [[ $(command -v nvim) ]] && alias vim="$(command -v nvim)"
+  [[ $(command -v nvim) ]] && { alias vim="$(command -v nvim)"; export EDITOR="nvim"; }
   set -o vi # press ESC and v to open command buffer
   
 
