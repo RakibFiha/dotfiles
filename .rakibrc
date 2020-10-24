@@ -117,34 +117,42 @@ myPS1Prompt()
             export PS2='\[⏩\] ';
     fi
 }
+
+function is_macos() {
+    test "$(uname)" == "Darwin"
+  }
+
+function is_linux() {
+    test "$(uname)" == "Linux"
+  }
+
 ## https://superuser.com/questions/570000/source-new-bashrc-in-all-open-terminals
 ## Linux
-if [[ "$( uname )" == "Linux" ]]; then
+if is_linux; then
   bashrc_sourced=$(stat -c %Y ~/.bashrc)
   PROMPT_COMMAND='
       test $(stat -c %Y ~/.bashrc) -ne $bashrc_sourced && source ~/.bashrc
   '
 ## MacOS
-elif [[ "$( uname )" == "Darwin" ]]; then
+elif is_macos; then
   bashrc_sourced=$(stat -f %m ~/.bash_profile)
   test $(stat -f %m ~/.bash_profile) -ne $bashrc_sourced && source ~/.bash_profile
 
   # Open Chrome from the command line. http:// will be added automatically if no protocol is specified.
   # e.g. chrome google.com
-
   function chrome() {
       URL=$1
       if [[ $1 != http* ]] ; then
           URL="http://$1"
       fi
-      /usr/bin/open -a '/Applications/Google Chrome.app' "$URL"
+      is_macos && /usr/bin/open -a '/Applications/Google Chrome.app' "$URL"
   }
   function brave() {
       URL=$1
       if [[ $1 != http* ]] ; then
           URL="http://$1"
       fi
-      /usr/bin/open -a '/Applications/Brave Browser.app' "$URL"
+      is_macos && /usr/bin/open -a '/Applications/Brave Browser.app' "$URL"
   }
   # Open Safari from the command line in the same way as chrome()
   function safari() {
@@ -154,8 +162,11 @@ elif [[ "$( uname )" == "Darwin" ]]; then
       fi
       /usr/bin/open -a '/Applications/Safari.app' "$URL"
   }
+  function browse() {
+    echo "$link"
+  }
 
-# Open discord
+  # Open discord
   function discord(){
     /usr/bin/open -a /Applications/Discord.app
   }
@@ -662,7 +673,6 @@ export PYTHON_HOST_PROG=$(command -v python)
 if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
   #: #install/uninstall
 install(){
-
   curDir=$(pwd)
   echo $curDir
   ln -s ${curDir}/.SpaceVim ${HOME}/.SpaceVim
@@ -675,7 +685,6 @@ install(){
   sudo apt update && sudo apt install jq tmux tty-clock -y
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
   echo "Add '. ${HOME}/${fl}' in ${HOME}/.bashrc"
-
 }
 
   if [[ "$1" == "install" && ! "$2" ]]; then
