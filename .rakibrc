@@ -16,8 +16,6 @@ cxe()
 }
 
 __git_init_folder_for_python(){
-git init && python3 -m venv ./; . bin/activate; pip3 freeze > requirements.txt
-
 local README='
 ### Description
 Python3 Project
@@ -38,8 +36,12 @@ lib/
 include/
 pyenv.cfg
 '
-printf "%s\n" "$README" > README.md
-printf "%s\n" "$GITIGNORE" > .gitignore
+$(which git) init \
+  && python3 -m venv ./ \
+  && . bin/activate \
+  && pip3 freeze > requirements.txt 
+  [[ ! -f "README.md" ]] && printf "%s\n" "$README" > README.md
+  [[ ! -f ".gitignore" ]] && printf "%s\n" "$GITIGNORE" > .gitignore
 }
 
 __make_git_folder(){
