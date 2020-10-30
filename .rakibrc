@@ -15,6 +15,59 @@ cxe()
   fc "$@"
 }
 
+__git_init_folder_for_python(){
+git init && python3 -m venv ./; . bin/activate; pip3 freeze > requirements.txt
+
+local README='
+### Description
+Python3 Project
+
+### Installation
+
+```
+python3 -m venv ./
+source bin/activate
+pip3 install -r requirements.txt
+```'
+
+local GITIGNORE='
+### For venv
+__pycache__/
+bin/
+lib/
+include/
+pyenv.cfg
+'
+printf "%s\n" "$README" > README.md
+printf "%s\n" "$GITIGNORE" > .gitignore
+}
+
+__make_git_folder(){
+  case "$1" in
+    python )
+      __git_init_folder_for_python
+      ;;
+    * )
+      echo "not found"
+  esac
+}
+
+git(){
+  local ARG1="$1"
+  local ARG2="$2"
+  case "$ARG1" in
+    'init' )
+      if [[ "$ARG2" == "python" ]]; then
+        __make_git_folder "$ARG2"
+      else
+        $(which git | head -1) "$ARG1"
+      fi
+      ;;
+    *)
+      $(which git | head -1) "$@"
+  esac
+}
+
 mkfs.ext4(){
   sudo $(brew --prefix e2fsprogs)/sbin/mkfs.ext4 "$@"
 }
