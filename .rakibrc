@@ -36,7 +36,7 @@ lib/
 include/
 pyenv.cfg
 '
-$(which git) init \
+command git init \
   && python3 -m venv ./ \
   && . bin/activate \
   && pip3 freeze > requirements.txt 
@@ -62,11 +62,11 @@ git(){
       if [[ "$ARG2" == "python" ]]; then
         __make_git_folder "$ARG2"
       else
-        $(which git | head -1) "$ARG1"
+        command git "$ARG1"
       fi
       ;;
     *)
-      $(which git | head -1) "$@"
+      command git "$@" 
   esac
 }
 
