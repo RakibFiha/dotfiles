@@ -24,24 +24,40 @@ mkcd(){
 touchme(){ touch "$1" && chmod +x "$_" && vim "$_"; }
 
 # url shortener
+# usage: echo "URL" | tinyurl
+# usage: tinyurl "URL"
 tinyurl(){
-  local link="$1"
-  local shortendurl=$(curl -s tinyurl.com/api-create.php?url="${link}")
-  echo ${shortendurl};
-}
-
-# gives segmentation fault
-ttmurl(){
-  local link="$1"
-  local shortendurl=$(curl -sF shorten="$link" https://ttm.sh) 
-  echo ${shortendurl};
+  if (( $# == 0 )); then
+    IFS= read -r link
+    curl -s tinyurl.com/api-create.php?url="${link}"
+  else
+    local link="$1"
+    curl -s tinyurl.com/api-create.php?url="${link}"
+  fi
 }
 
 # text sharing
+# usage: echo "hello world" | shareit
+# usage: shareit "some thing" 
+# usage: echo "${texts}" | curl -F 'f:1=<-' ix.io
 shareit(){
-  local texts="$1"
+  if (( $# == 0 )); then
+    curl -F 'f:1=<-' ix.io < /dev/stdin
+  else
+    curl -F 'f:1=<-' ix.io <<< "$1"
+  fi
+}
 
-  echo "${texts}" | curl -F 'f:1=<-' ix.io
+# 
+b64decode()
+{
+    if (( $# == 0 )) ; then
+        base64 --decode < /dev/stdin
+        echo
+    else
+        base64 --decode <<< "$1"
+        echo
+    fi
 }
 # for git
 __git_init_folder_for_python(){
