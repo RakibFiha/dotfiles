@@ -79,7 +79,7 @@ __pycache__/
 bin/
 lib/
 include/
-pyenv.cfg
+pyvenv.cfg
 '
 command git init \
   && python3 -m venv ./ \
