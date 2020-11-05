@@ -23,6 +23,26 @@ mkcd(){
 # touch and chmod and vim
 touchme(){ touch "$1" && chmod +x "$_" && vim "$_"; }
 
+# url shortener
+tinyurl(){
+  local link="$1"
+  local shortendurl=$(curl -s tinyurl.com/api-create.php?url="${link}")
+  echo ${shortendurl};
+}
+
+# gives segmentation fault
+ttmurl(){
+  local link="$1"
+  local shortendurl=$(curl -sF shorten="$link" https://ttm.sh) 
+  echo ${shortendurl};
+}
+
+# text sharing
+shareit(){
+  local texts="$1"
+
+  echo "${texts}" | curl -F 'f:1=<-' ix.io
+}
 # for git
 __git_init_folder_for_python(){
 local README='
@@ -102,7 +122,7 @@ refresh()
 ## Edit history
 eh()
 {
-  history -a ; vim + ~/.bash_history ; history -r ;
+  history -a ; nvim + ~/.bash_history ; history -r ;
 }
 
 whereami(){ echo "$HOSTNAME"; }
@@ -158,7 +178,7 @@ check_update_status()
 
 myPS1Prompt()
 {
-    autocd
+    #autocd
     local outdated_brew=0 outdated_cask=0 outdated_pip3=0 outdated_npm=0 outdated_port=0;
     ## For home directory show 🏠 instead of ~
     where=$(pwd)
@@ -692,8 +712,8 @@ compcpp(){
 }
 
 source_settings(){
-
-## source in your bashrc or bash_profile
+  ## source in your bashrc or bash_profile
+  set -o vi # press ESC and v to open command buffer
   alias tree="tree -CAFa -I 'CVS|*.*.package|.svn|.git' --dirsfirst"
   alias screensaver='for ((;;)); do echo -ne "\033[$((1+RANDOM%LINES));$((1+RANDOM%COLUMNS))H\033[$((RANDOM%2));3$((RANDOM%8))m$((RANDOM%10))"; sleep 0.1 ; done'
   alias l='ls'
@@ -702,33 +722,28 @@ source_settings(){
   alias gcm='git commit -am'
   alias gpo='git push origin'
   alias ga='git add'
-
-  [[ -f /usr/local/bin/shopt ]] && alias shopt='/usr/local/bin/shopt'
-# alias sudo='sudo -h 127.0.0.1' # https://askubuntu.com/a/1060349/900143
-  [[ $(command -v nvim) ]] && { alias vim="$(command -v nvim)"; export EDITOR="nvim"; }
-  set -o vi # press ESC and v to open command buffer
-  
-
-# https://superuser.com/questions/137438/how-to-unlimited-bash-shell-history
+  alias shopt="/usr/local/bin/shopt" #|| __shopt__ > "${shoptpath}" && chmod +x "${shoptpath}" && alias shopt="${shoptpath}"
+  # alias sudo='sudo -h 127.0.0.1' # https://askubuntu.com/a/1060349/900143
+  export EDITOR="vim";
+  alias vim="nvim"; 
+  # https://superuser.com/questions/137438/how-to-unlimited-bash-shell-history
   export HISTTIMEFORMAT="[%F %T] "
   export HISTFILESIZE=
   export HISTSIZE=
   shopt -s histappend
-# https://www.commandlinefu.com/commands/view/3858/commit-command-to-history-file-immedeately-after-execution
-# PROMPT_COMMAND="history -a"
-
-# spacevim python3
-export PYTHON3_HOST_PROG=$(command -v python3)
-export PYTHON_HOST_PROG=$(command -v python)
-
+  # https://www.commandlinefu.com/commands/view/3858/commit-command-to-history-file-immedeately-after-execution
+  # PROMPT_COMMAND="history -a"
+  # spacevim python3
+  export PYTHON3_HOST_PROG="/usr/local/bin/python3"
+  export PYTHON_HOST_PROG="/usr/local/bin/python"
   export PROMPT_COMMAND="myPS1Prompt" ## using it to activate the PS1 prompt
   bind 'set show-all-if-ambiguous on'
   bind 'set menu-complete-display-prefix on'
   bind 'TAB:menu-complete'
-#bind 'set completion-display-width 0'
+  #bind 'set completion-display-width 0'
   bind 'set colored-completion-prefix on'
   bind 'set colored-stats on'
-#bind 'set completion-ignore-case on'
+  #bind 'set completion-ignore-case on'
   shopt -s cdspell
   complete -d cd
   open-tmux
