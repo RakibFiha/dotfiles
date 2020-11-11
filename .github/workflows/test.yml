@@ -1,0 +1,17 @@
+name: Tinu Tests
+
+on: [push, pull_request]
+
+jobs:
+  lines:
+    name: Less than 300 lines
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Install sloccount
+      run: sudo apt-get install sloccount
+    - name: Check <1000 lines
+      run: sloccount .rakibrc; if [ $(sloccount .rakibrc | sed -n 's/.*Total Physical Source Lines of Code (SLOC)[ ]*= \([^ ]*\).*/\1/p' | tr -d ',') -gt 1000 ]; then exit 1; fi
+
