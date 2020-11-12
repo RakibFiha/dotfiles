@@ -20,9 +20,8 @@ setup() {
 }
 
 @test "5: url shortener tinyurl pipe test" {
-  skip
-  run echo "google.com" | tinyurl
-  [ "$status" -eq 0 ]
+  #run echo "google.com" | tinyurl
+  [[ "$(echo 'google.com' | tinyurl)" ]]
 }
 
 @test "6: url shortener tinyurl arg test" {
@@ -31,9 +30,8 @@ setup() {
 }
 
 @test "7: sharesomething via shareit pipe test" {
-  skip
-  run echo "something" | shareit
-  [ "$status" -eq 0 ]
+  #run echo "something" | shareit
+  [[ "$(echo 'something' | shareit)" ]]
 }
 
 @test "8: sharesomething via shareit arg test" {
@@ -42,13 +40,12 @@ setup() {
 }
 
 @test "9: base64 decode pipe test" {
-  skip
-  run printf "%s" "SGVsbG8sIFdvcmxk" | b64decode
-  echo "test output status: $status"
-  echo "Output:"
-  echo "$output"
-  echo " --- "
-  [[ "$output" == "Hello, World" ]]
+  [[ "$(printf "%s" "SGVsbG8sIFdvcmxk" | b64decode)" == "Hello, World" ]]
+  #  echo "test output status: $status"
+  #  echo "Output:"
+  #  echo "$output"
+  #  echo " --- "
+  #[[ "$output" == "Hello, World" ]]
 }
 
 @test "10: base64 decode arg test" {
