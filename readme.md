@@ -1,5 +1,9 @@
 ## tiling window manager (MacOS)
 
+--------------------------------------------------------------------
+
+![Tinu Tests](https://github.com/RakibFiha/dotfiles/workflows/Tinu%20Tests/badge.svg)
+
 --- Using `yabai` as tiling window manager. Similar to `chunkwm` but more maintained
 
 To install `yabai`, enable SIP without fs and debug
