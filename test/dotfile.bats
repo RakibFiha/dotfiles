@@ -1,5 +1,5 @@
 setup {
-  source ../.rakibrc
+  source ../dotfile
 }
 
 @test "1: autocd" {
