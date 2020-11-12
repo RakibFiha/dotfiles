@@ -15,3 +15,14 @@ jobs:
     - name: Check <1000 lines
       run: sloccount .rakibrc; if [ $(sloccount .rakibrc | sed -n 's/.*Total Physical Source Lines of Code (SLOC)[ ]*= \([^ ]*\).*/\1/p' | tr -d ',') -gt 1000 ]; then exit 1; fi
 
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+    - name: Install bats
+      run: sudo apt-get install bats
+    - name: Run bats
+      run: cd test; bats dotfile.bats
