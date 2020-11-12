@@ -1,5 +1,5 @@
 setup {
-  source ../dotfile
+  source dotfile
 }
 
 @test "1: autocd" {
