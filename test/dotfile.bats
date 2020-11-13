@@ -12,11 +12,13 @@ setup() {
 
 @test "3: mkcd" {
   run mkcd -p newdir
-  [ "$status" -eq 0 ]
+  [ "$status" -eq 0 ] && bash -c "rm -rf newdir"
 }
 
 @test "4: touchme" {
   skip
+  run touchme "something"
+  [ "$status" -eq 0 ] 
 }
 
 @test "5: url shortener tinyurl pipe test" {
