@@ -177,13 +177,13 @@ check_update_status()
                   echo -e "ⓝ Ⓟ ⓜ You have $outdated_npm npm update(s) .ⓝ Ⓟ ⓜ";
               }
           }
-      [[ -f /tmp/.port-outdated ]] && {
-          outdated_port=$(cat /tmp/.port-outdated);
-              (( outdated_port > 0 )) && {
-                  echo -e "📦 You have $outdated_port port update(s) .📦";
-              }
-          }
-      let local outdated=$((outdated_brew + outdated_cask + outdated_pip3 + outdated_npm + outdated_port))
+      #[[ -f /tmp/.port-outdated ]] && {
+      #    outdated_port=$(cat /tmp/.port-outdated);
+      #        (( outdated_port > 0 )) && {
+      #            echo -e "📦 You have $outdated_port port update(s) .📦";
+      #        }
+      #    }
+      let local outdated=$((outdated_brew + outdated_cask + outdated_pip3 + outdated_npm))
 
       (( outdated > 0 )) && {
           echo -e "🍺 🐍 ⓝ Ⓟ ⓜ 📦 You have $outdated outdated packages...";
@@ -195,7 +195,7 @@ check_update_status()
 myPS1Prompt()
 {
     #autocd
-    local outdated_brew=0 outdated_cask=0 outdated_pip3=0 outdated_npm=0 outdated_port=0;
+    local outdated_brew=0 outdated_cask=0 outdated_pip3=0 outdated_npm=0; #outdated_port=0;
     ## For home directory show 🏠 instead of ~
     where=$(pwd)
     home=$HOME
@@ -337,9 +337,9 @@ elif is_macos; then
       fi
 
       # if _has_updates port; then
-          echo "Updating ports";
-          sudo port selfupdate;
-          sudo port upgrade outdated;
+      #    echo "Updating ports";
+      #    sudo port selfupdate;
+      #    sudo port upgrade outdated;
 
           ## update app store apps
           echo "Updating app store apps:"
@@ -740,7 +740,7 @@ source_settings(){
   alias ga='git add'
   alias shopt="/usr/local/bin/shopt" #|| __shopt__ > "${shoptpath}" && chmod +x "${shoptpath}" && alias shopt="${shoptpath}"
   # alias sudo='sudo -h 127.0.0.1' # https://askubuntu.com/a/1060349/900143
-  export EDITOR="vim";
+  export EDITOR="nvim";
   alias vim="nvim"; 
   # https://superuser.com/questions/137438/how-to-unlimited-bash-shell-history
   export HISTTIMEFORMAT="[%F %T] "
