@@ -12,7 +12,22 @@ autocd(){   (( $? == 126 )) && {
 # usage cxe <command number from history>
 cxe() { fc "$@"; }
 
-show_todo(){ :; }
+todo(){ 
+subarg(){
+local file="$1"
+local subarg="$2"
+if [[ "$2" == "edit" ]]; then
+    vim "${file}"
+else
+    cat "${file}"
+fi
+}
+  case "$1" in
+    personal) subarg "${personal_todo}" "$2" ;;
+    work) subarg "${work_todo}" "$2" ;;
+    shopping) subarg "${shopping_todo}" "$2" ;;
+  esac
+}
 
 # mkdir and cd
 mkcd(){
@@ -730,6 +745,7 @@ compcpp(){
 }
 
 source_settings(){
+  source /Users/mdrakiburrahman/Environments/2.Current_Work/dotfiles/todo.conf
   ## source in your bashrc or bash_profile
   set -o vi # press ESC and v to open command buffer
   alias tree="tree -CAFa -I 'CVS|*.*.package|.svn|.git' --dirsfirst"
