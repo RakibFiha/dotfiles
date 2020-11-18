@@ -12,6 +12,8 @@ autocd(){   (( $? == 126 )) && {
 # usage cxe <command number from history>
 cxe() { fc "$@"; }
 
+show_todo(){ :; }
+
 # mkdir and cd
 mkcd(){
   case "$1" in
@@ -746,6 +748,8 @@ source_settings(){
   export HISTTIMEFORMAT="[%F %T] "
   export HISTFILESIZE=
   export HISTSIZE=
+  ## for pkgsrc
+  export PATH=/opt/pkg/bin:$PATH
   shopt -s histappend
   # https://www.commandlinefu.com/commands/view/3858/commit-command-to-history-file-immedeately-after-execution
   # PROMPT_COMMAND="history -a"
