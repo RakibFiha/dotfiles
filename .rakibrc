@@ -744,6 +744,11 @@ compcpp(){
   fi
 }
 
+## ghidra
+ghidra(){
+  ghidrarun
+}
+
 source_settings(){
   source /Users/mdrakiburrahman/Environments/2.Current_Work/dotfiles/todo/todo.conf
   ## source in your bashrc or bash_profile
