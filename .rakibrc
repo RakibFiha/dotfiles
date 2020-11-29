@@ -85,22 +85,20 @@ Python3 Project
 ### Installation
 
 ```
-python3 -m venv ./
-source bin/activate
+python3 -m venv ./venv
+source ./venv/bin/activate
 pip3 install -r requirements.txt
 ```'
 
 local GITIGNORE='
 ### For venv
 __pycache__/
-bin/
-lib/
-include/
+venv/
 pyvenv.cfg
 '
 command git init \
-  && python3 -m venv ./ \
-  && . bin/activate \
+  && python3 -m venv ./venv \
+  && . "$_"/bin/activate \
   && pip3 install --upgrade pip \
   && pip3 freeze > requirements.txt 
   [[ ! -f "README.md" ]] && printf "%s\n" "$README" > README.md
@@ -770,7 +768,7 @@ source_settings(){
   export HISTFILESIZE=
   export HISTSIZE=
   ## for pkgsrc
-  export PATH=/opt/pkg/bin:$PATH
+  export PATH=$PATH:/opt/pkg/bin
   shopt -s histappend
   # https://www.commandlinefu.com/commands/view/3858/commit-command-to-history-file-immedeately-after-execution
   # PROMPT_COMMAND="history -a"
@@ -793,20 +791,20 @@ source_settings(){
 
 if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
   #: #install/uninstall
-install(){
-  curDir=$(pwd)
-  echo $curDir
-  ln -s ${curDir}/.SpaceVim ${HOME}/.SpaceVim
-  ln -s ${curDir}/.SpaceVim.d ${HOME}/.SpaceVim.d
-  ln -s ${curDir}/.tmux.conf.rak ${HOME}/.tmux.conf.rak
-  local fl=$(basename ${BASH_SOURCE[0]})
-  ln -s ${curDir}/${fl} ${HOME}/${fl}
-  curl -sLf https://spacevim.org/install.sh | bash
+  install(){
+    curDir=$(pwd)
+    echo $curDir
+    ln -s ${curDir}/.SpaceVim ${HOME}/.SpaceVim
+    ln -s ${curDir}/.SpaceVim.d ${HOME}/.SpaceVim.d
+    ln -s ${curDir}/.tmux.conf.rak ${HOME}/.tmux.conf.rak
+    local fl=$(basename ${BASH_SOURCE[0]})
+    ln -s ${curDir}/${fl} ${HOME}/${fl}
+    curl -sLf https://spacevim.org/install.sh | bash
 
-  sudo apt update && sudo apt install jq tmux tty-clock -y
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
-  echo "Add '. ${HOME}/${fl}' in ${HOME}/.bashrc"
-}
+    sudo apt update && sudo apt install jq tmux tty-clock -y
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
+    echo "Add '. ${HOME}/${fl}' in ${HOME}/.bashrc"
+  }
 
   if [[ "$1" == "install" && ! "$2" ]]; then
     install
