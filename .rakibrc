@@ -747,6 +747,25 @@ ghidra(){
   ghidrarun
 }
 
+## kubernetes
+#alias kga="kubectl get all -n monitoring"
+kga(){
+ kubectl get all #-n monitoring
+}
+#alias kgc="kubectl get configmap -n monitoring"
+kgc(){
+ kubectl get configmap #-n monitoring
+}
+kdp(){
+ kubectl delete pod "$1" #-n monitoring
+}
+kr(){
+ kubectl replace -f "$1" #-n monitoring
+}
+kgp(){
+ kubectl get pod "$1" --output=yaml #-n monitoring 
+}
+
 source_settings(){
   source /Users/mdrakiburrahman/Environments/2.Current_Work/dotfiles/todo/todo.conf
   ## source in your bashrc or bash_profile
