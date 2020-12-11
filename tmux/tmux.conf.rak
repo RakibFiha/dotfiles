@@ -3,6 +3,11 @@ unbind C-b
 set-option -g prefix C-a
 bind-key C-a send-prefix
 
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+ 
+set -g @continuum-restore 'on'
+
 # default path for new window/pane
 # does not work
 # set-option default-path "$PWD"

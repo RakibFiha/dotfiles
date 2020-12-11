@@ -120,6 +120,9 @@
   name = 'gtags'
 
 [[layers]]
+  name = "lang#go"
+
+[[layers]]
   name = 'VersionControl'
 
 [[layers]]
