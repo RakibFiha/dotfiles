@@ -11,7 +11,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Install sloccount and bats
-      run: sudo apt-get update && sudo apt-get install sloccount bats -y
+      run: sudo apt-get update && sudo apt-get install sloccount -y
     - name: Check <1000 lines
       run: sloccount .rakibrc; if [ $(sloccount .rakibrc | sed -n 's/.*Total Physical Source Lines of Code (SLOC)[ ]*= \([^ ]*\).*/\1/p' | tr -d ',') -gt 1000 ]; then exit 1; fi
 
@@ -22,5 +22,7 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
+    - name: Install bats
+      run: sudo apt-get update && sudo apt-get install bats -y
     - name: Run bats
       run: cd test; bats dotfile.bats
