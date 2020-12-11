@@ -24,9 +24,7 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
-    - name: Install sudo
-      run: apt-get update -y && apt-get install sudo -y
     - name: Install bats
-      run: sudo apt-get install bats
+      run: sudo apt-get install bats -y
     - name: Run bats
       run: cd test; bats dotfile.bats
