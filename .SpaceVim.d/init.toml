@@ -141,6 +141,9 @@
   name = "lsp"
 
 [[layers]]
+  name = "lang#swift"
+
+[[layers]]
   name = "core#statusline"
   name = "colorscheme"
 
