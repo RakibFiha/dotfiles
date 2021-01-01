@@ -724,7 +724,7 @@ compcpp(){
   
   if [[ "${output}" == "exc" ]] || [[ "${output}" == "-e" ]]; then
     exc="exc"
-    output="a.out"
+    output="aTemp.out"
   fi
 
   if [[ "$input" == "-h" ]] || [[ "$input" == "-help" ]]; then
@@ -736,7 +736,10 @@ compcpp(){
     g++ -W -Wall -pedantic -o ${output} -p ${input} -Qunused-arguments
       if (( $? == 0 )); then
         if [[ "$exc" == "exc" ]] || [[ "$exc" == "-e" ]]; then
-        ./${output}
+        ./${output} && \
+          if [[ "${output}" == "aTemp.out" ]]; then
+            rm -rf "${output}"
+          fi
         fi
       fi
   fi
