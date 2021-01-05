@@ -771,6 +771,7 @@ kgp(){
 
 source_settings(){
   source /Users/mdrakiburrahman/Environments/2.Current_Work/dotfiles/todo/todo.conf
+  source ~/enhancd/init.sh
   ## source in your bashrc or bash_profile
   set -o vi # press ESC and v to open command buffer
   alias tree="tree -CAFa -I 'CVS|*.*.package|.svn|.git' --dirsfirst"
