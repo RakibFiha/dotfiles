@@ -37,6 +37,59 @@ mkcd(){
   esac
 }
 
+
+# https://apple.stackexchange.com/questions/410513/in-mac-how-to-do-tail-f-pid-to-terminate-after-process-exit-like-linux/410518#410518
+
+_tail(){
+  # usage _tail <file> <pid>
+
+  function _tail::trap() {
+    trap - SIGTERM && kill -- -$$
+  }
+
+  local FILE="$1"
+  local PID="$2"
+
+  if ps -p "$PID" > /dev/null; then
+    trap _tail::trap SIGINT
+    command tail -f "${FILE}" &
+    local pid=$!
+    disown # Optional: if you want to supress the kill SIGINT message
+    local run=true
+
+    while ${run}; do
+      if ! $(ps -p ${PID} > /dev/null); then
+        kill -9 ${pid} > /dev/null 2>&1
+        run=false
+      fi
+    done
+
+  else
+    return 1
+  fi
+}
+
+tail(){
+  # usage: tail -f <file> --pid=<pid>
+  if (( $# > 0 )); then
+    local fFlag="$1"
+    local FILE="$2"
+    local PIDARGS="$3"
+    local PIDARG="$(echo ${PIDARGS} | cut -d '=' -f1)"
+    local PID="$(echo ${PIDARGS} | cut -d '=' -f2)"
+
+    if [[ "$fFlag" == "-f" ]] && [[ -f "${FILE}" ]] && \
+      [[ "${PIDARG}" == "--pid" ]] && [[ $(ps -p "${PID}") ]]; then
+      _tail "${FILE}" "${PID}"
+    else
+      command tail "$@"
+    fi
+
+  else
+    tail < /dev/stdin 2>/dev/null
+  fi
+}
+
 # touch and chmod and vim
 touchme(){ touch "$1" && chmod +x "$_" && vim "$_"; }
 
