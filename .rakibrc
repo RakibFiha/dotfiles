@@ -90,6 +90,32 @@ tail(){
   fi
 }
 
+# https://stackoverflow.com/questions/3425340/how-can-i-capture-the-stdout-from-a-process-that-is-already-running
+capture() {
+    sudo dtrace -p "$1" -qn '
+        syscall::write*:entry
+        /pid == $target && arg0 == 1/ {
+            printf("%s", copyinstr(arg1, arg2));
+        }
+    '
+}
+
+# https://apple.stackexchange.com/questions/410743/how-to-trigger-get-info-for-file-using-command-line/410745#410745
+getfileinfo() {
+
+local FILE="$1"
+
+if [[ -f ${FILE} ]]; then
+
+osascript <<EOF > /dev/null 2>&1
+set aFile to (POSIX file "$FILE") as alias
+tell application "Finder" to open information window of aFile
+EOF
+
+fi
+
+}
+
 # touch and chmod and vim
 touchme(){ touch "$1" && chmod +x "$_" && vim "$_"; }
 
