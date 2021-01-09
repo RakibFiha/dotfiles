@@ -105,13 +105,16 @@ getfileinfo() {
 
 local FILE="$1"
 
-if [[ -f ${FILE} ]]; then
+if [[ -e ${FILE} ]]; then
 
-osascript <<EOF > /dev/null 2>&1
+  osascript <<EOF > /dev/null 2>&1
 set aFile to (POSIX file "$FILE") as alias
 tell application "Finder" to open information window of aFile
 EOF
 
+else
+  echo "${FILE} not found!" 
+  return 1
 fi
 
 }
