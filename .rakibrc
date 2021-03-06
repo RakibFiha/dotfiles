@@ -214,7 +214,11 @@ git(){
 }
 
 mkfs.ext4(){
-  sudo $(brew --prefix e2fsprogs)/sbin/mkfs.ext4 "$@"
+  if is_macos; then
+    sudo $(brew --prefix e2fsprogs)/sbin/mkfs.ext4 "$@"
+  elif is_linux; then
+    command mkfs.ext4 "$@"
+  fi
 }
 
 refresh()
@@ -248,7 +252,7 @@ __exit()
 
 check_update_status()
 {
-    if [[ "$( uname )" == "Darwin" ]]; then
+    if is_macos; then
       work="$home/Environments";
       [[ -f /tmp/.brew-outdated ]] && {
           outdated_brew=$(cat /tmp/.brew-outdated);
@@ -300,19 +304,14 @@ myPS1Prompt()
 
     check_update_status;
 
-    if [[ "$where" == "$home" ]]; then
-        # where="${where/$home/🏠 }";
-        export PS1='\[👉🏠🖐 💲\] ';
-        export PS2='\[⏩\] ';
-        # echo "Welcome back to home!"
-      else
-            # where="${where/$work/👨‍💻}";
-            # export PS1="$where \n⏩  "
-            export PS1="👉🏛 \e[1;34m\W\e[m \e[1;33m\e[m🔥\n💲 ";
-            ## the space at the end keeps the line to make, m helps to prevent line break
-            # export PS1="👉🏛 \e[1;34m\W\e[m \e[1;33m\e[m🔥💲 ";
-            # export PS1='👉🏛 \e[1;34m\W\e \e[1;33m\e🔥💲 ';
-            export PS2='\[⏩\] ';
+    if is_macos; then
+      if [[ "$where" == "$home" ]]; then
+          export PS1='\[👉🏠🖐 💲\] ';
+          export PS2='\[⏩\] ';
+        else
+              export PS1="👉🏛 \e[1;34m\W\e[m \e[1;33m\e[m🔥\n💲 ";
+              export PS2='\[⏩\] ';
+      fi
     fi
 }
 
@@ -748,7 +747,7 @@ if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] &&
     # do this if tmuxSession is already created and attached
     if [[ ! $(tmux ls | grep -w attached | grep -w "${tmuxSession}") ]]; then
       tmux attach -t "${tmuxSession}" # do this if tmuxSession is not attached
-      tmux source-file $HOME/.tmux.conf.rak # source tmux config
+      tmux source $HOME/.tmux.conf.rak # source tmux config
     fi
   fi
 fi
@@ -852,8 +851,8 @@ kgp(){
 }
 
 source_settings(){
-  source /Users/mdrakiburrahman/Environments/2.Current_Work/dotfiles/todo/todo.conf
-  source ~/enhancd/init.sh
+  test -f /Users/mdrakiburrahman/Environments/2.Current_Work/dotfiles/todo/todo.confsource && source "$_"
+  test -f ~/enhancd/init.sh && source "$_"
   ## source in your bashrc or bash_profile
   set -o vi # press ESC and v to open command buffer
   alias tree="tree -CAFa -I 'CVS|*.*.package|.svn|.git' --dirsfirst"
@@ -878,8 +877,10 @@ source_settings(){
   # https://www.commandlinefu.com/commands/view/3858/commit-command-to-history-file-immedeately-after-execution
   # PROMPT_COMMAND="history -a"
   # spacevim python3
-  export PYTHON3_HOST_PROG="/usr/local/bin/python3"
-  export PYTHON_HOST_PROG="/usr/local/bin/python"
+  is_macos && { 
+    export PYTHON3_HOST_PROG="/usr/local/bin/python3";
+    export PYTHON_HOST_PROG="/usr/local/bin/python";
+  }
   export PROMPT_COMMAND="myPS1Prompt" ## using it to activate the PS1 prompt
   bind 'set show-all-if-ambiguous on'
   bind 'set menu-complete-display-prefix on'

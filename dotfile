@@ -10,12 +10,111 @@ autocd(){   (( $? == 126 )) && {
 # usage cxe <command number from history>
 cxe() { fc "$@"; }
 
+todo(){ 
+subarg(){
+local file="$1"
+local subarg="$2"
+if [[ "$2" == "edit" ]]; then
+    vim "${file}"
+else
+    cat "${file}"
+fi
+}
+  case "$1" in
+    personal) subarg "${personal_todo}" "$2" ;;
+    work) subarg "${work_todo}" "$2" ;;
+    shopping) subarg "${shopping_todo}" "$2" ;;
+  esac
+}
+
 # mkdir and cd
 mkcd(){
   case "$1" in
     -p) mkdir -p "$2" && cd "$_" ;;
     *) mkdir "$1" && cd "$_" ;;
   esac
+}
+
+
+# https://apple.stackexchange.com/questions/410513/in-mac-how-to-do-tail-f-pid-to-terminate-after-process-exit-like-linux/410518#410518
+
+_tail(){
+  # usage _tail <file> <pid>
+
+  function _tail::trap() {
+    trap - SIGTERM && kill -- -$$
+  }
+
+  local FILE="$1"
+  local PID="$2"
+
+  if ps -p "$PID" > /dev/null; then
+    trap _tail::trap SIGINT
+    command tail -f "${FILE}" &
+    local pid=$!
+    disown # Optional: if you want to supress the kill SIGINT message
+    local run=true
+
+    while ${run}; do
+      if ! $(ps -p ${PID} > /dev/null); then
+        kill -9 ${pid} > /dev/null 2>&1
+        run=false
+      fi
+    done
+
+  else
+    return 1
+  fi
+}
+
+tail(){
+  # usage: tail -f <file> --pid=<pid>
+  if (( $# > 0 )); then
+    local fFlag="$1"
+    local FILE="$2"
+    local PIDARGS="$3"
+    local PIDARG="$(echo ${PIDARGS} | cut -d '=' -f1)"
+    local PID="$(echo ${PIDARGS} | cut -d '=' -f2)"
+
+    if [[ "$fFlag" == "-f" ]] && [[ -f "${FILE}" ]] && \
+      [[ "${PIDARG}" == "--pid" ]] && [[ $(ps -p "${PID}") ]]; then
+      _tail "${FILE}" "${PID}"
+    else
+      command tail "$@"
+    fi
+
+  else
+    tail < /dev/stdin 2>/dev/null
+  fi
+}
+
+# https://stackoverflow.com/questions/3425340/how-can-i-capture-the-stdout-from-a-process-that-is-already-running
+capture() {
+    sudo dtrace -p "$1" -qn '
+        syscall::write*:entry
+        /pid == $target && arg0 == 1/ {
+            printf("%s", copyinstr(arg1, arg2));
+        }
+    '
+}
+
+# https://apple.stackexchange.com/questions/410743/how-to-trigger-get-info-for-file-using-command-line/410745#410745
+getfileinfo() {
+
+local FILE="$1"
+
+if [[ -e ${FILE} ]]; then
+
+  osascript <<EOF > /dev/null 2>&1
+set aFile to (POSIX file "$FILE") as alias
+tell application "Finder" to open information window of aFile
+EOF
+
+else
+  echo "${FILE} not found!" 
+  return 1
+fi
+
 }
 
 # touch and chmod and vim
@@ -62,24 +161,24 @@ __git_init_folder_for_python(){
 local README='
 ### Description
 Python3 Project
+
 ### Installation
+
 ```
-python3 -m venv ./
-source bin/activate
+python3 -m venv ./venv
+source ./venv/bin/activate
 pip3 install -r requirements.txt
 ```'
 
 local GITIGNORE='
 ### For venv
 __pycache__/
-bin/
-lib/
-include/
+venv/
 pyvenv.cfg
 '
 command git init \
-  && python3 -m venv ./ \
-  && . bin/activate \
+  && python3 -m venv ./venv \
+  && . "$_"/bin/activate \
   && pip3 install --upgrade pip \
   && pip3 freeze > requirements.txt 
   [[ ! -f "README.md" ]] && printf "%s\n" "$README" > README.md
@@ -113,7 +212,11 @@ git(){
 }
 
 mkfs.ext4(){
-  sudo $(brew --prefix e2fsprogs)/sbin/mkfs.ext4 "$@"
+  if is_macos; then
+    sudo $(brew --prefix e2fsprogs)/sbin/mkfs.ext4 "$@"
+  elif is_linux; then
+    command mkfs.ext4 "$@"
+  fi
 }
 
 refresh()
@@ -147,7 +250,7 @@ __exit()
 
 check_update_status()
 {
-    if [[ "$( uname )" == "Darwin" ]]; then
+    if is_macos; then
       work="$home/Environments";
       [[ -f /tmp/.brew-outdated ]] && {
           outdated_brew=$(cat /tmp/.brew-outdated);
@@ -173,13 +276,13 @@ check_update_status()
                   echo -e "ⓝ Ⓟ ⓜ You have $outdated_npm npm update(s) .ⓝ Ⓟ ⓜ";
               }
           }
-      [[ -f /tmp/.port-outdated ]] && {
-          outdated_port=$(cat /tmp/.port-outdated);
-              (( outdated_port > 0 )) && {
-                  echo -e "📦 You have $outdated_port port update(s) .📦";
-              }
-          }
-      let local outdated=$((outdated_brew + outdated_cask + outdated_pip3 + outdated_npm + outdated_port))
+      #[[ -f /tmp/.port-outdated ]] && {
+      #    outdated_port=$(cat /tmp/.port-outdated);
+      #        (( outdated_port > 0 )) && {
+      #            echo -e "📦 You have $outdated_port port update(s) .📦";
+      #        }
+      #    }
+      let local outdated=$((outdated_brew + outdated_cask + outdated_pip3 + outdated_npm))
 
       (( outdated > 0 )) && {
           echo -e "🍺 🐍 ⓝ Ⓟ ⓜ 📦 You have $outdated outdated packages...";
@@ -191,7 +294,7 @@ check_update_status()
 myPS1Prompt()
 {
     #autocd
-    local outdated_brew=0 outdated_cask=0 outdated_pip3=0 outdated_npm=0 outdated_port=0;
+    local outdated_brew=0 outdated_cask=0 outdated_pip3=0 outdated_npm=0; #outdated_port=0;
     ## For home directory show 🏠 instead of ~
     where=$(pwd)
     home=$HOME
@@ -199,19 +302,14 @@ myPS1Prompt()
 
     check_update_status;
 
-    if [[ "$where" == "$home" ]]; then
-        # where="${where/$home/🏠 }";
-        export PS1='\[👉🏠🖐 💲\] ';
-        export PS2='\[⏩\] ';
-        # echo "Welcome back to home!"
-      else
-            # where="${where/$work/👨‍💻}";
-            # export PS1="$where \n⏩  "
-            export PS1="👉🏛 \e[1;34m\W\e[m \e[1;33m\e[m🔥\n💲 ";
-            ## the space at the end keeps the line to make, m helps to prevent line break
-            # export PS1="👉🏛 \e[1;34m\W\e[m \e[1;33m\e[m🔥💲 ";
-            # export PS1='👉🏛 \e[1;34m\W\e \e[1;33m\e🔥💲 ';
-            export PS2='\[⏩\] ';
+    if is_macos; then
+      if [[ "$where" == "$home" ]]; then
+          export PS1='\[👉🏠🖐 💲\] ';
+          export PS2='\[⏩\] ';
+        else
+              export PS1="👉🏛 \e[1;34m\W\e[m \e[1;33m\e[m🔥\n💲 ";
+              export PS2='\[⏩\] ';
+      fi
     fi
 }
 
@@ -333,9 +431,9 @@ elif is_macos; then
       fi
 
       # if _has_updates port; then
-          echo "Updating ports";
-          sudo port selfupdate;
-          sudo port upgrade outdated;
+      #    echo "Updating ports";
+      #    sudo port selfupdate;
+      #    sudo port upgrade outdated;
 
           ## update app store apps
           echo "Updating app store apps:"
@@ -647,7 +745,7 @@ if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] &&
     # do this if tmuxSession is already created and attached
     if [[ ! $(tmux ls | grep -w attached | grep -w "${tmuxSession}") ]]; then
       tmux attach -t "${tmuxSession}" # do this if tmuxSession is not attached
-      tmux source-file $HOME/.tmux.conf.rak # source tmux config
+      tmux source $HOME/.tmux.conf.rak # source tmux config
     fi
   fi
 fi
@@ -705,7 +803,7 @@ compcpp(){
   
   if [[ "${output}" == "exc" ]] || [[ "${output}" == "-e" ]]; then
     exc="exc"
-    output="a.out"
+    output="aTemp.out"
   fi
 
   if [[ "$input" == "-h" ]] || [[ "$input" == "-help" ]]; then
@@ -717,13 +815,42 @@ compcpp(){
     g++ -W -Wall -pedantic -o ${output} -p ${input} -Qunused-arguments
       if (( $? == 0 )); then
         if [[ "$exc" == "exc" ]] || [[ "$exc" == "-e" ]]; then
-        ./${output}
+        ./${output} && \
+          if [[ "${output}" == "aTemp.out" ]]; then
+            rm -rf "${output}"
+          fi
         fi
       fi
   fi
 }
 
+## ghidra
+ghidra(){
+  ghidrarun
+}
+
+## kubernetes
+#alias kga="kubectl get all -n monitoring"
+kga(){
+ kubectl get all #-n monitoring
+}
+#alias kgc="kubectl get configmap -n monitoring"
+kgc(){
+ kubectl get configmap #-n monitoring
+}
+kdp(){
+ kubectl delete pod "$1" #-n monitoring
+}
+kr(){
+ kubectl replace -f "$1" #-n monitoring
+}
+kgp(){
+ kubectl get pod "$1" --output=yaml #-n monitoring 
+}
+
 source_settings(){
+  test -f /Users/mdrakiburrahman/Environments/2.Current_Work/dotfiles/todo/todo.confsource && source "$_"
+  test -f ~/enhancd/init.sh && source "$_"
   ## source in your bashrc or bash_profile
   set -o vi # press ESC and v to open command buffer
   alias tree="tree -CAFa -I 'CVS|*.*.package|.svn|.git' --dirsfirst"
@@ -736,18 +863,22 @@ source_settings(){
   alias ga='git add'
   alias shopt="/usr/local/bin/shopt" #|| __shopt__ > "${shoptpath}" && chmod +x "${shoptpath}" && alias shopt="${shoptpath}"
   # alias sudo='sudo -h 127.0.0.1' # https://askubuntu.com/a/1060349/900143
-  export EDITOR="vim";
+  export EDITOR="nvim";
   alias vim="nvim"; 
   # https://superuser.com/questions/137438/how-to-unlimited-bash-shell-history
   export HISTTIMEFORMAT="[%F %T] "
   export HISTFILESIZE=
   export HISTSIZE=
+  ## for pkgsrc
+  export PATH=$PATH:/opt/pkg/bin
   shopt -s histappend
   # https://www.commandlinefu.com/commands/view/3858/commit-command-to-history-file-immedeately-after-execution
   # PROMPT_COMMAND="history -a"
   # spacevim python3
-  export PYTHON3_HOST_PROG="/usr/local/bin/python3"
-  export PYTHON_HOST_PROG="/usr/local/bin/python"
+  is_macos && { 
+    export PYTHON3_HOST_PROG="/usr/local/bin/python3";
+    export PYTHON_HOST_PROG="/usr/local/bin/python";
+  }
   export PROMPT_COMMAND="myPS1Prompt" ## using it to activate the PS1 prompt
   bind 'set show-all-if-ambiguous on'
   bind 'set menu-complete-display-prefix on'
@@ -760,3 +891,5 @@ source_settings(){
   complete -d cd
   open-tmux
 }
+
+
