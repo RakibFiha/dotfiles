@@ -2,7 +2,8 @@
 
 #shopt -s autocd
 ## my implementation of autocd without shopt switch
-autocd(){   (( $? == 126 )) && {
+autocd(){ 
+  (( $? == 126 )) && {
     if [[ -d "$_" ]]; then
       cd "$_"
     fi
@@ -295,7 +296,7 @@ check_update_status()
 
 myPS1Prompt()
 {
-    #autocd
+    autocd
     local outdated_brew=0 outdated_cask=0 outdated_pip3=0 outdated_npm=0; #outdated_port=0;
     ## For home directory show 🏠 instead of ~
     where=$(pwd)
