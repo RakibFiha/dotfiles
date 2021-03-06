@@ -13,4 +13,8 @@ endfunction
 
 function! myspacevim#after() abort
   "" iunmap jk
+  " copy stuff to clipboard
+  set clipboard=unnamedplus
+  " change dir automatically
+  set autochdir
 endfunction
