@@ -112,6 +112,10 @@
   name = "MaxMEllon/vim-jsx-pretty"
   merged = false
 
+[[custom_plugins]]
+  repo = "https://github.com/pearofducks/ansible-vim.git"
+  merged = false
+
 [[layers]]
   name = "git"
 
