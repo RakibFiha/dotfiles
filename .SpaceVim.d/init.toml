@@ -28,6 +28,8 @@
   autocomplete_method = "ycm"
   snippet_engine = "ultisnips"
 
+  # guifont = "SourceCodePro Nerd Font Mono:h11"
+
   # options for statusline
   # Set the statusline separators of statusline, default is "arrow"
   statusline_separator = "arrow"
@@ -118,6 +120,7 @@
 
 [[layers]]
   name = "git"
+  git-plugin = "fugitive"
 
 # Enable gtag layer
 [[layers]]
