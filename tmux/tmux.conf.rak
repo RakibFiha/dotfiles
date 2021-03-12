@@ -215,7 +215,7 @@ wg_is_keys_off="#[fg=$color_light,bg=$color_window_off_indicator]#([ $(tmux show
 wg_is_zoomed="#[fg=$color_dark,bg=$color_secondary]#{?window_zoomed_flag,[Z],}#[default]"
 # TODO: highlighted for nested local session as well
 git_symbol="#[fg=$color_secondary]#(echo '⎇  ')#[default]"
-git_status="#[fg=$color_secondary]#(cd #{pane_current_path} && git status -sb | head -1 | tr -d '#')#[default]"
+git_status="#[fg=$color_secondary]#(cd #{pane_current_path} && git status -sb | head -1 | tr -d '# ' | cut -c1-40)#[default]"
 git_dirty="#[fg=$color_secondary]#(cd #{pane_current_path} && git status --porcelain 1> /tmp/git_dirty 2> /dev/null; if [ -s /tmp/git_dirty ]; then echo '♨️ :'; else echo ✅; fi;)#[default]"
 git_changed_files="#[fg=$color_secondary]#(cd #{pane_current_path} && echo '0' > /tmp/git_diff_zero && git diff --name-only | wc -l | tr -d ' ' 1> /tmp/git_diff 2> /dev/null && diff /tmp/git_diff /tmp/git_diff_zero || cat /tmp/git_diff; )#[default]"
 #git_changed_files="#[fg=$color_secondary]#(cd #{pane_current_path} && test '0' != $(git diff --name-only | wc -l | tr -d ' ') && echo $_;)#[default]"
