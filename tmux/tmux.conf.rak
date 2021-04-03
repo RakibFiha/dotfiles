@@ -17,7 +17,7 @@ bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded"
 bind-key C split-window -h "vim ~/.tmux.conf"
 
 # Enable mouse mode (tmux 2.1 and above)
-# setw -g mouse on
+setw -g mouse on
 
 # don't rename windows automatically
 # set-option -g allow-rename off

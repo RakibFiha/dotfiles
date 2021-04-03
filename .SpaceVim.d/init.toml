@@ -110,6 +110,9 @@
   auto_fix = true
   enable_flow_syntax = true
 
+[[layers]]
+  name = "lang#java"
+
 [[custom_plugins]]
   name = "MaxMEllon/vim-jsx-pretty"
   merged = false

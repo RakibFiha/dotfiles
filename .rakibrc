@@ -751,6 +751,7 @@ if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] &&
       tmux source $HOME/.tmux.conf.rak # source tmux config
     fi
   fi
+  tmux source ~/.tmux.conf.rak
 fi
 }
 
