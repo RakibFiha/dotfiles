@@ -1,35 +1,20 @@
-#=============================================================================
-# dark_powered.toml --- dark powered configuration example for SpaceVim
-# Copyright (c) 2016-2017 Wang Shidong & Contributors
-# Author: Wang Shidong < wsdjeg at 163.com >
-# URL: https://spacevim.org
-# License: GPLv3
-#=============================================================================
-
 # All SpaceVim option below [option] section
 [options]
   # set spacevim theme. by default colorscheme layer is not loaded,
   # if you want to use more colorscheme, please load the colorscheme
   # layer
-  colorscheme = "desert"
+
+  #colorscheme = "desert"
+  #colorscheme = "palenight"
+  #colorscheme = "molokai"
+  #colorscheme = "NeoSolarized"
+  colorscheme = "gruvbox"
   colorscheme_bg = "dark"
-  # Disable guicolors in basic mode, many terminal do not support 24bit
-  # true colors
-  enable_guicolors = true
-  # Disable statusline separator, if you want to use other value, please
-  # install nerd fonts
-  statusline_separator = "arrow"
-  statusline_inactive_separator = "arrow"
-  buffer_index_type = 4
-  enable_tabline_filetype_icon = true
-  enable_statusline_mode = false
-  bootstrap_before = 'myspacevim#before'
-  bootstrap_after = 'myspacevim#after'
-  autocomplete_method = "ycm"
-  snippet_engine = "ultisnips"
-
-  # guifont = "SourceCodePro Nerd Font Mono:h11"
-
+  #colorscheme_bg = "light"
+  #colorscheme_bg = "term"
+  #colorscheme_bg = "statusline"
+  #colorscheme_bg = "gui"
+ 
   # options for statusline
   # Set the statusline separators of statusline, default is "arrow"
   statusline_separator = "arrow"
@@ -66,6 +51,31 @@
      'time'
   ]
 
+  filetree_direction = "left"
+
+  filemanager = "nerdtree"
+  enable_vimfiler_gitstatus = true
+
+  # keep q for recording a macro
+  windows_smartclose = ''
+
+  # Disable guicolors in basic mode, many terminal do not support 24bit
+  # true colors
+  enable_guicolors = true
+  # Disable statusline separator, if you want to use other value, please
+  # install nerd fonts
+  statusline_separator = "arrow"
+  statusline_inactive_separator = "arrow"
+  buffer_index_type = 4
+  enable_tabline_filetype_icon = true
+  enable_statusline_mode = false
+  bootstrap_before = 'myspacevim#before'
+  bootstrap_after = 'myspacevim#after'
+  autocomplete_method = "ycm"
+  snippet_engine = "ultisnips"
+
+  #guifont = "SourceCodePro Nerd Font Mono:h11"
+
   #'winnr' window number
   #'syntax checking'
   #'filename' file name
@@ -81,11 +91,15 @@
   #'input method' input method
   #'search status' search index
 
-  colorscheme = "palenight"
-  colorscheme_bg = "dark"
-  filetree_direction = "left"
-  filemanager = "nerdtree"
-  enable_vimfiler_gitstatus = true
+[[layers]]
+  name = "colorscheme"
+
+[[layers]]
+  name = 'VersionControl'
+
+# Enable gtag layer
+[[layers]]
+  name = 'gtags'
 
 # Enable autocomplete layer
 [[layers]]
@@ -103,7 +117,7 @@
 
 [[layers]]
   name = "lang#rust"
-  racer_cmd ="/Users/mdrakiburrahman/.cargo/bin/racer"
+  racer_cmd ="$HOME/.cargo/bin/racer"
 
 [[layers]]
   name = "lang#javascript"
@@ -113,27 +127,12 @@
 [[layers]]
   name = "lang#java"
 
-[[custom_plugins]]
-  name = "MaxMEllon/vim-jsx-pretty"
-  merged = false
-
-[[custom_plugins]]
-  repo = "https://github.com/pearofducks/ansible-vim.git"
-  merged = false
-
 [[layers]]
   name = "git"
   git-plugin = "fugitive"
 
-# Enable gtag layer
-[[layers]]
-  name = 'gtags'
-
 [[layers]]
   name = "lang#go"
-
-[[layers]]
-  name = 'VersionControl'
 
 [[layers]]
   name = "lang#python"
@@ -155,5 +154,11 @@
 
 [[layers]]
   name = "core#statusline"
-  name = "colorscheme"
 
+[[custom_plugins]]
+  name = "MaxMEllon/vim-jsx-pretty"
+  merged = false
+
+[[custom_plugins]]
+  repo = "https://github.com/pearofducks/ansible-vim.git"
+  merged = false
