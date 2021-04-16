@@ -32,6 +32,8 @@
   # Enable/Disable show mode on statusline
   enable_statusline_mode = true
 
+  # Enable automatic update
+  automatic_update = true
   # left sections of statusline
   statusline_left_sections = [
      'winnr',
@@ -132,6 +134,21 @@
   git-plugin = "fugitive"
 
 [[layers]]
+  name = "github"
+
+[[layers]]
+  name = "fzf"
+
+[[layers]]
+  name = "tools"
+
+[[layers]]
+  name = "lang#dockerfile"
+
+[[layers]]
+  name = "lang#html"
+
+[[layers]]
   name = "lang#go"
 
 [[layers]]
@@ -153,6 +170,12 @@
   name = "lang#swift"
 
 [[layers]]
+  name = "lang#sh"
+
+[[layers]]
+  name = "lang#bash"
+
+[[layers]]
   name = "core#statusline"
 
 [[custom_plugins]]
@@ -162,3 +185,12 @@
 [[custom_plugins]]
   repo = "https://github.com/pearofducks/ansible-vim.git"
   merged = false
+
+[[layers]]
+  name = "ui"
+  enable = true
+  enable_sidebar = true
+
+[[layers]]
+  name = "japanese"
+
