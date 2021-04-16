@@ -1,0 +1,7 @@
+# find your keys from -> sed -n l
+$include  /etc/inputrc
+# alternate mappings for "page up" and "page down" to search the history
+"\033[5~": history-search-backward
+#"\033": history-search-backward
+"\033[6~": history-search-forward
+#"\035": history-search-forward
