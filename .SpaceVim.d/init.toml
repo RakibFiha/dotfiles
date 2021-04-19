@@ -181,23 +181,9 @@
 
 [[layers]]
   name = "lang#swift"
-
-[[layers]]
-  name = "lang#sh"
-
-[[layers]]
-  name = "lang#bash"
-
+  
 [[layers]]
   name = "core#statusline"
-
-[[custom_plugins]]
-  name = "MaxMEllon/vim-jsx-pretty"
-  merged = false
-
-[[custom_plugins]]
-  repo = "https://github.com/pearofducks/ansible-vim.git"
-  merged = false
 
 [[layers]]
   name = "ui"
@@ -206,3 +192,16 @@
 
 [[layers]]
   name = "japanese"
+
+# custom plugins
+[[custom_plugins]]
+  name = "MaxMEllon/vim-jsx-pretty"
+  merged = false
+
+[[custom_plugins]]
+  repo = "https://github.com/pearofducks/ansible-vim.git"
+  merged = false
+
+[[custom_plugins]]
+  repo = "https://github.com/metakirby5/codi.vim.git"
+  merged = false
