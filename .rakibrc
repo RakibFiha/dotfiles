@@ -730,6 +730,10 @@ play-it(){ # play anything, ie youtube playlist, mp3, mp4 etc from terminal
  fi
 }
 
+ivim(){
+  nvim "$(find . | fzf)"
+}
+
 zeal(){
   ( /usr/local/bin/zeal "$@" &
   disown )
