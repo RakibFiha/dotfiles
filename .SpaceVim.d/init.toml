@@ -143,6 +143,9 @@
   name = "lang#java"
 
 [[layers]]
+  name = "lang#go"
+
+[[layers]]
   name = "git"
   git-plugin = "fugitive"
 

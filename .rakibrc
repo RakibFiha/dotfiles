@@ -756,7 +756,6 @@ open-tmux(){
       fi
     fi
   fi
-  tmux source ~/.tmux.conf.rak
 }
 
 organise_files_by_extension(){
