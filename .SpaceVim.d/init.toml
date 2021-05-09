@@ -146,6 +146,9 @@
   name = "lang#go"
 
 [[layers]]
+  name = "lang#nim"
+
+[[layers]]
   name = "git"
   git-plugin = "fugitive"
 
