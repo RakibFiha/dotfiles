@@ -9,6 +9,14 @@ let g:jedi#force_py_version = 3
 function! myspacevim#before() abort
   let g:neomake_python_python_exe = 'python3'
   "" nnoremap jk <Esc>
+
+fun! TrimWhitespace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfun
+command! TrimWhitespace call TrimWhitespace()
+
 endfunction
 
 function! myspacevim#after() abort
