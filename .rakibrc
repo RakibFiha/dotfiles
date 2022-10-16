@@ -346,44 +346,6 @@ safari() {
 # Open discord
 discord(){ is_macos && /usr/bin/open -a /Applications/Discord.app; }
 
-show_update_prompt(){
-  ## https://superuser.com/questions/570000/source-new-bashrc-in-all-open-terminals
-  ## Linux
-  if is_linux; then
-    local bashrc_sourced=$(stat -c %Y ~/.bashrc)
-    PROMPT_COMMAND='
-        test $(stat -c %Y ~/.bashrc) -ne $bashrc_sourced && source ~/.bashrc
-    '
-  ## MacOS
-  elif is_macos; then
-    local bashrc_sourced=$(stat -f %m ~/.bash_profile)
-    test $(stat -f %m ~/.bash_profile) -ne $bashrc_sourced && source ~/.bash_profile
-
-    # Open Chrome from the command line. http:// will be added automatically if no protocol is specified.
-    # e.g. chrome google.com
-    _count_updates() {
-      local type=$1 f=/tmp/.$type-outdated upd=0
-      [[ -f $f ]] && { local upd=$( cat "$f" ); }
-      echo $upd
-    }
-
-    _has_updates() {
-      local type=$1 cnt=$( _count_updates $type );
-      [[ $cnt -gt 0 ]] && { return 0; } || { return 1; }
-    }
-
-    _update_prompt() {
-      local type=$1
-      local icon=$2
-
-      local upd=$( _count_updates $type )
-      [[ "$upd" -gt 0 ]] && {
-        echo -e "\x1B[104m\x1B[97m$icon You have $upd $1 update(s).$icon \x1B[0m";
-      }
-    }
-  fi
-}
-
 # Google things from the command line, e.g. google Jake Wright
 google() {
     local QUERY=$( rawurlencode "$*" )

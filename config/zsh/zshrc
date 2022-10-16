@@ -1,0 +1,458 @@
+set -o vi
+
+alias vim=nvim
+alias tree="tree -CAFa -I 'CVS|*.*.package|.svn|.git' --dirsfirst"
+
+# open_tmux automatically and restore windows when terminal is opened
+export MY_TMUX_SESSION_NAME="rakib"
+export MY_TMUX_SESSION_CONF="$HOME/.tmuxsession.conf"
+export MY_TMUX_CONF="$HOME/.tmux.conf"
+open_tmux(){
+    # https://unix.stackexchange.com/questions/43601/how-can-i-set-my-default-shell-to-start-up-tmux
+  if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+    # https://unix.stackexchange.com/questions/103898/how-to-start-tmux-with-attach-if-a-session-exists/176885#176885
+    if [[ ! $(tmux ls | grep -w "${MY_TMUX_SESSION_NAME}" ) ]]; then
+      tmux new -s ${MY_TMUX_SESSION_NAME} -d
+      tmux source-file "$MY_TMUX_SESSION_CONF" # do this if MY_TMUX_SESSION_NAME is not created
+      tmux source-file "$MY_TMUX_CONF" # source tmux config
+    else
+      # do this if MY_TMUX_SESSION_NAME is already created and attached
+      if [[ ! $(tmux ls | grep -w attached | grep -w "${MY_TMUX_SESSION_NAME}") ]]; then
+        tmux attach -t "${MY_TMUX_SESSION_NAME}" # do this if MY_TMUX_SESSION_NAME is not attached
+      fi
+        tmux source-file "$MY_TMUX_CONF" # source tmux config
+    fi
+  else
+      tmux source-file "$MY_TMUX_CONF" # source tmux config
+  fi
+}
+
+autocd(){ 
+  (( $? == 126 )) && {
+    if [[ -d "$_" ]]; then cd "$_" || return $?; fi
+  }
+}
+# or do cxe to open command buffer <control + x + e > in linux so the func is cxe
+# usage cxe <command number from history>
+cxe() { fc "$@"; }
+
+# mkdir and cd
+mkcd(){
+  case "$1" in
+    -p) mkdir -p "$2" && cd "$_" ;;
+    *) mkdir "$1" && cd "$_" ;;
+  esac
+}
+
+# https://apple.stackexchange.com/questions/410513/in-mac-how-to-do-tail-f-pid-to-terminate-after-process-exit-like-linux/410518#410518
+_tail(){
+  # usage _tail <file> <pid>
+
+  function _tail::trap() {
+    trap - SIGTERM && kill -- -$$
+  }
+
+  local FILE="$1"
+  local PID="$2"
+
+  if ps -p "$PID" > /dev/null; then
+    trap _tail::trap SIGINT
+    command tail -f "${FILE}" &
+    local pid=$!
+    disown # Optional: if you want to supress the kill SIGINT message
+    local run=true
+
+    while ${run}; do
+      if ! $(ps -p ${PID} > /dev/null); then
+        kill -9 ${pid} > /dev/null 2>&1
+        run=false
+      fi
+    done
+
+  else
+    return 1
+  fi
+}
+
+tail(){
+  # usage: tail -f <file> --pid=<pid>
+  if (( $# > 0 )); then
+    local fFlag="$1"
+    local FILE="$2"
+    local PIDARGS="$3"
+    local PIDARG="$(echo ${PIDARGS} | cut -d '=' -f1)"
+    local PID="$(echo ${PIDARGS} | cut -d '=' -f2)"
+
+    if [[ "$fFlag" == "-f" ]] && [[ -f "${FILE}" ]] && \
+      [[ "${PIDARG}" == "--pid" ]] && [[ $(ps -p "${PID}") ]]; then
+      _tail "${FILE}" "${PID}"
+    else
+      command tail "$@"
+    fi
+
+  else
+    tail < /dev/stdin 2>/dev/null
+  fi
+}
+
+# https://stackoverflow.com/questions/3425340/how-can-i-capture-the-stdout-from-a-process-that-is-already-running
+capture() {
+    sudo dtrace -p "$1" -qn '
+        syscall::write*:entry
+        /pid == $target && arg0 == 1/ {
+            printf("%s", copyinstr(arg1, arg2));
+        }
+    '
+}
+
+# https://apple.stackexchange.com/questions/410743/how-to-trigger-get-info-for-file-using-command-line/410745#410745
+getfileinfo() {
+  is_macos && {
+  local FILE="$1"
+  if [[ -e ${FILE} ]]; then
+    osascript <<EOF > /dev/null 2>&1
+set aFile to (POSIX file "$FILE") as alias
+tell application "Finder" to open information window of aFile
+EOF
+  else
+    echo "${FILE} not found!" && return 1
+  fi
+  }
+}
+
+# url shortener
+# usage: echo "URL" | tinyurl
+# usage: tinyurl "URL"
+tinyurl(){
+  if (( $# == 0 )); then
+    IFS= read -r link
+    curl -s tinyurl.com/api-create.php?url="${link}"
+  else
+    local link="$1"
+    curl -s tinyurl.com/api-create.php?url="${link}"
+  fi
+}
+
+shareit(){
+  if (( $# == 0 )); then
+    curl -F 'f:1=<-' ix.io < /dev/stdin
+  else
+    curl -F 'f:1=<-' ix.io <<< "$1"
+  fi
+}
+
+# 
+b64decode()
+{
+    if (( $# == 0 )) ; then
+        base64 --decode < /dev/stdin
+        echo
+    else
+        base64 --decode <<< "$1"
+        echo
+    fi
+}
+# for git
+__git_init_folder_for_python(){
+local README='
+### Description
+Python3 Project
+
+### Installation
+
+```
+python3 -m venv ./venv
+source ./venv/bin/activate
+pip3 install -r requirements.txt
+```'
+
+local GITIGNORE='
+### For venv
+__pycache__/
+venv/
+pyvenv.cfg
+'
+command git init \
+  && python3 -m venv ./venv \
+  && . "$_"/bin/activate \
+  && pip3 install --upgrade pip \
+  && pip3 freeze > requirements.txt 
+  [[ ! -f "README.md" ]] && printf "%s\n" "$README" > README.md
+  [[ ! -f ".gitignore" ]] && printf "%s\n" "$GITIGNORE" > .gitignore
+}
+
+__make_git_folder(){
+  case "$1" in
+    python)
+      __git_init_folder_for_python
+      ;;
+    *)
+      echo "not found"
+      ;;
+  esac
+}
+
+git(){
+  local ARG1="$1"
+  local ARG2="$2"
+  case "$ARG1" in
+    'init' )
+      if [[ "$ARG2" == "python" ]]; then
+        __make_git_folder "$ARG2"
+      else
+        command git "$ARG1"
+      fi
+      ;;
+    *)
+      command git "$@" 
+      ;;
+  esac
+}
+
+mkfs.ext4(){
+  if is_macos; then
+    sudo $(brew --prefix e2fsprogs)/sbin/mkfs.ext4 "$@"
+  elif is_linux; then
+    command mkfs.ext4 "$@"
+  fi
+}
+
+refresh() {
+  if [[ "$(uname)" == "Darwin" ]]; then
+    if [[ "${SHELL}" == "/bin/zsh" ]]; then
+      source "${HOME}/.zshrc"
+    else
+      source "${HOME}/.bash_profile"
+    fi
+  elif [[ "$(uname)" == "Linux" ]]; then
+    source "${HOME}/.bashrc"
+  else
+    echo "$(uname) not known"
+  fi
+}
+
+omnidisksweeper() {
+  # https://askubuntu.com/questions/875812/in-terminal-how-do-you-run-a-sudo-command-with-an-at-the-end-without-prior-aut?noredirect=1&lq=1
+  # sudo bash -c '/Applications/OmniDiskSweeper.app/Contents/MacOS/OmniDiskSweeper &' > /tmp/.omni 2>&1
+  is_macos && sudo rm -rf /private/var/root/.Trash/*
+  [[ "$(uname)" == "Darwin" ]] && sudo bash -c '/Applications/OmniDiskSweeper.app/Contents/MacOS/OmniDiskSweeper & '
+}
+
+chrome() {
+    local URL=$1
+    if [[ $1 != http* ]] ; then
+        URL="http://$1"
+    fi
+    is_macos && /usr/bin/open -a '/Applications/Google Chrome.app' "$URL"
+}
+
+brave() {
+    local URL=$1
+    if [[ $1 != http* ]] ; then
+        URL="http://$1"
+    fi
+    is_macos && /usr/bin/open -a '/Applications/Brave Browser.app' "$URL"
+}
+
+# Open Safari from the command line in the same way as chrome()
+safari() {
+    local URL=$1
+    if [[ $1 != http* ]] ; then
+        URL="http://$1"
+    fi
+    is_macos && /usr/bin/open -a '/Applications/Safari.app' "$URL"
+}
+
+# Open discord
+discord(){ is_macos && /usr/bin/open -a /Applications/Discord.app; }
+
+# Google things from the command line, e.g. google Jake Wright
+google() {
+    local QUERY=$( rawurlencode "$*" )
+    brave "https://www.google.co.uk/search?client=safari&rls=en&q=$QUERY&ie=UTF-8&oe=UTF-8"
+}
+
+# URL encoding function taken from https://stackoverflow.com/a/10660730
+rawurlencode() {
+  local string="${1}"
+  local strlen=${#string}
+  local encoded=""
+  local pos c o
+
+  for (( pos=0 ; pos<strlen ; pos++ )); do
+     c=${string:$pos:1}
+     case "$c" in
+        [-_.~a-zA-Z0-9] ) o="${c}" ;;
+        * )               printf -v o '%%%02x' "'$c"
+     esac
+     encoded+="${o}"
+  done
+  echo "${encoded}"    # You can either set a return variable (FASTER)
+  local REPLY="${encoded}"   #+or echo the result (EASIER)... or both... :p
+}
+
+show_paths() {
+## usage: <no> shows with number
+  if [[ "$1" == "no" ]]; then
+    echo $PATH | tr ":" "\n" | nl;
+  else
+    local old=$IFS
+    local IFS=:
+    printf "%s\n" $PATH
+    local IFS=$old
+  fi
+}
+
+weather() {
+  local city="$1"
+  [[ ! $city ]] && { echo "Argument missing"; echo "Usage: weather <city_name>"; __exit; }
+  [[ "$2" ]] && { echo "Only accepts one argument"; __exit; }
+
+  curl wttr.in/${city}
+}
+
+mosth() {
+  unset HISTTIMEFORMAT;
+  history \
+      | awk '($2 !~ "^\\./") { CMD[$2]++; count++; } END { for (a in CMD) { printf ("%4d %5.1f%% %s\n",CMD[a],CMD[a]/count*100,a); } }' \
+      | sort -nr \
+      | head \
+      | nl;
+  export HISTTIMEFORMAT="[%F %T] ";
+}
+
+ps10() { ps aux | sort -rk 4,4 | head -n 10; }
+
+get_available_ip() {
+  if [[ "$1" == "nmap" ]]; then
+    nmap -sP 192.168.1.0/24; arp -n | grep "192.168.1.[0-9]* *ether"
+  elif [[ "$1" == "ping" ]]; then
+    ping -c2 192.168.1.255 >/dev/null; arp -a
+  else
+    echo "usage: get_available_ip <nmap or ping>"
+  fi
+}
+
+xmanpage() { is_macos && open x-man-page://$@ ; }
+preman() { is_macos && man -t "$@" | open -f -a "Preview" ;}
+gman() {
+     man "$1" | col -b > "/tmp/$1"
+     open -a "/Applications/Google Chrome.app" "/tmp/$1"
+}
+
+startclock() {
+  while sleep 1; do
+    tput sc;
+    tput cup 0 $(($(tput cols)-29));
+    date;
+    tput rc;
+  done &
+  local pid=$!
+  echo "$pid" > /tmp/.startclockpid
+}
+
+stopclock() { kill -9 $(cat /tmp/.startclockpid); }
+
+jekyll-serve() { bundle exec jekyll serve; }
+
+qsort(){ ## pass array as an positional arguments to this function
+  local pivot i smaller=() larger=(); qsort_return=() ## declare var and arrays
+  (($#==0)) && return 0; pivot=$1; shift
+  for i; do (( i < pivot )) && { smaller+=( "$i" ); } || { larger+=( "$i" ); }; done
+    qsort "${smaller[@]}"; smaller=( "${qsort_return[@]}" );
+    qsort "${larger[@]}"; larger=( "${qsort_return[@]}" );
+    qsort_return=( "${smaller[@]}" "$pivot" "${larger[@]}" )
+}
+
+getFileByExt(){
+  local extension="$1"
+  if (( $# == 1 )); then
+  for file in *; do
+    if [[ $file =~ \.$extension$ ]]; then
+      echo $file
+    fi
+  done
+  else
+    echo "Usage: ${FUNCNAME[0]} <extension>"
+  fi
+}
+
+getFileWithoutExt(){
+local extension="$1"
+if (( $# == 1 )); then
+for file in *; do
+  if [[ ! $file =~ \.$extension$ ]]; then
+    echo $file
+  fi
+done
+else
+  echo "Usage: ${FUNCNAME[0]} <extension>"
+fi
+}
+
+zmq_push(){
+  local m=$(</dev/stdin) && \
+  printf "$(printf '\\\\x01\\\\x00\\\\x%02x\\\\x00%s' ${#m} "$m")" \
+  >/dev/tcp/$1/$2
+}
+
+zmqSendMsg(){
+  shift 1; printf "$1" | zmq_push "$@"
+}
+
+getBatteryDetails(){ pmset "$@"; }
+
+tm(){
+  if [[ ! "$1" ]]; then
+    echo "No argument passed.."
+  else
+    tmux detach -E "tmux new -A -s '$1'";
+  fi
+}
+
+# fd - cd to selected directory
+fd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
+
+# fh - search in your command history and execute selected command
+fh() {
+  eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//' | cut -d ' ' -f3- ) 
+}
+
+# ch - browse chrome history
+ch() {
+  local cols sep
+  cols=$(( COLUMNS / 3 ))
+  sep='{::}'
+
+  cp -f ~/Library/Application\ Support/Google/Chrome/Profile\ 1/History /tmp/h
+
+  sqlite3 -separator $sep /tmp/h \
+    "select substr(title, 1, $cols), url
+     from urls order by last_visit_time desc" |
+  awk -F $sep '{printf "%-'$cols's  \x1b[36m%s\x1b[m\n", $1, $2}' |
+  fzf --ansi --multi | sed 's#.*\(https*://\)#\1#' | xargs open
+}
+
+how2do(){ # how to do something, find out from terminal
+  local lang="${1}"
+  local search="${2}"
+  curl cht.sh/"${lang}"/"${search}"
+}
+
+random_strings(){
+ if [[ "$(uname)" == "Darwin" ]]; then
+   LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | fold -w ${1:-32} | head -n 1
+ else
+   cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${1:-32} | head -n 1
+ fi
+}
+
+## ghidra
+ghidra(){ ghidrarun; }
+
+open_tmux
