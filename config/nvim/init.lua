@@ -1,5 +1,8 @@
-require'nvim-tree'.setup {}
-require('keys')
+require('completions')
 require('vars')
-require('opts')
+require('keys')
 require('plug')
+require('opts')
+require('nvim-tree')
+require('lualine')
+require('lsp')

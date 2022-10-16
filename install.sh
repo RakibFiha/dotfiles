@@ -4,6 +4,6 @@ set -euo pipefail
 
 pushd config
  for file in *; do
-   cp -r $file $HOME/config/
+   cp -r $file $HOME/.config/
  done
 popd

@@ -2,8 +2,6 @@
 local opt = vim.opt
 local cmd = vim.api.nvim_command
 
--- Snip...
-
 -- [[ Theme ]]
 -- cmd('colorscheme dracula')       -- cmd:  Set the colorscheme
 
@@ -53,4 +51,3 @@ local options = {
 for k,v in pairs(options) do
   opt[k] = v
 end
-
