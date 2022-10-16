@@ -454,5 +454,3 @@ random_strings(){
 
 ## ghidra
 ghidra(){ ghidrarun; }
-
-open_tmux
