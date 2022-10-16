@@ -1,5 +1,5 @@
 setup() {
-  source ../dotfile
+  source ../config/zsh/zshrc
 }
 
 @test "1: autocd" {
