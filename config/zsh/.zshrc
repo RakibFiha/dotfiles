@@ -99,5 +99,5 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-source ~/config/zsh/zshrc
+source ~/.config/zsh/zshrc
 open_tmux

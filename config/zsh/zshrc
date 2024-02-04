@@ -1,7 +1,16 @@
 set -o vi
 
 alias vim=nvim
+alias nvim=lvim
 alias tree="tree -CAFa -I 'CVS|*.*.package|.svn|.git' --dirsfirst"
+
+export PATH=$PATH:$HOME/.local/bin
+if [[ "$(uname)" == "Linux" ]]; then
+  nvim_uname_arc="linux$(uname -i | cut -d '_' -f2)"
+elif [[ "$(uname)" == "Darwin" ]]; then
+  nvim_uname_arc="macos"
+fi
+export PATH=$PATH:$HOME/.local/bin/nvim-$nvim_uname_arc/bin
 
 # open_tmux automatically and restore windows when terminal is opened
 export MY_TMUX_SESSION_NAME="rakib"
