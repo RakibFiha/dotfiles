@@ -35,19 +35,34 @@ install_lunarvim() {
   LV_BRANCH="${version}" bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.3/neovim-0.9/utils/installer/install.sh)
 }
 
-install_neovim
-install_lunarvim
+config() {
+  pushd config
+   for file in *; do
+     cp -r $file $HOME/.config/
+   done
+  popd
+  
+  pushd $HOME/.config/zsh
+    bash install.sh
+  popd
+  
+  pushd $HOME/.config/tmux
+    bash install.sh
+  popd
+}
 
-pushd config
- for file in *; do
-   cp -r $file $HOME/.config/
- done
-popd
+install() {
+  install_neovim
+  install_lunarvim
+}
 
-pushd $HOME/.config/zsh
-  bash install.sh
-popd
+[[ "$#" -ne "1" ]] && echo "Usage: $0 config|install|all" && exit 1;
 
-pushd $HOME/.config/tmux
-  bash install.sh
-popd
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  case $1 in
+    config) config ;;
+    install) install ;;
+    all) install && config ;;
+    *) echo "no such option $1" && exit 1 ;;
+  esac
+fi

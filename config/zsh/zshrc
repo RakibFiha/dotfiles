@@ -14,8 +14,10 @@ export PATH=$PATH:$HOME/.local/bin/nvim-$nvim_uname_arc/bin
 
 # open_tmux automatically and restore windows when terminal is opened
 export MY_TMUX_SESSION_NAME="rakib"
-export MY_TMUX_SESSION_CONF="$HOME/.tmuxsession.conf"
-export MY_TMUX_CONF="$HOME/.tmux.conf"
+export MY_TMUX_SESSION_CONF="$HOME/.config/tmux/tmuxsession.conf"
+export TMUX_PLUGIN_MANAGER_PATH="~/.tmux/plugins"
+export MY_TMUX_CONF="$HOME/.config/tmux/tmux.conf"
+
 open_tmux(){
     # https://unix.stackexchange.com/questions/43601/how-can-i-set-my-default-shell-to-start-up-tmux
   if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
