@@ -30,6 +30,14 @@ panel = { enabled = false }
 end
 }
 }
+
+lvim.builtin.which_key.mappings["t"] = {
+  name = "+Terminal",
+  f = { "<cmd>ToggleTerm<cr>", "Floating terminal" },
+  v = { "<cmd>2ToggleTerm size=30 direction=vertical<cr>", "Split vertical" },
+  h = { "<cmd>2ToggleTerm size=30 direction=horizontal<cr>", "Split horizontal" },
+}
+
 -- Below config is required to prevent copilot overriding Tab with a suggestion
 -- when you're just trying to indent!
 local has_words_before = function()
@@ -46,3 +54,4 @@ fallback()
 end
 end)
 lvim.builtin.cmp.mapping["<Tab>"] = on_tab
+
