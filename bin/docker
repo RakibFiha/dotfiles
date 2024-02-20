@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# For colima: colima start --runtime containerd
+
+_docker() {
+  local runtime="$1"
+  local status
+  case "$runtime" in
+    podman)
+      shift 2
+
+      DOCKER_HOST="unix:///$HOME/.local/share/containers/podman/machine/podman-machine-default/podman.sock" podman "$@"
+      ;;
+    colima-containerd)
+      shift 2
+
+      type -p colima > /dev/null && status=0 || status=1
+      [[ $status == 1 ]] && exit 1;
+      type -p nerdctl > /dev/null && status=0 || status=1
+      [[ $status == 1 ]] && colima nerdctl install 2> /dev/null;
+
+      DOCKER_HOST="unix:///$HOME/.colima/docker.sock" nerdctl "$@"
+      ;;
+  esac
+}
+
+docker() {
+  local runtime=$1
+
+  _docker "$runtime" "$@"
+}
+
+main() {
+  docker "${DOCKER_RUNTIME:-colima-containerd}" "$@"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi

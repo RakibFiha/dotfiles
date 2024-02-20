@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+get_cert() {
+  local cert_name=$1
+  local cert
+  cert="$(security find-certificate -c "$cert_name" -p 2> /dev/null)"
+  echo "$cert"
+}
+
+podman_add_cert() {
+  local cert_name=$1
+  local cert
+  cert="$(get_cert "$cert_name")"
+
+  podman machine ssh podman-machine-default <<RUN
+  sudo su -
+  cd /etc/pki/ca-trust/source/anchors
+  echo "$cert" > "$cert_name.pem"
+  update-ca-trust && echo Done adding $cert_name certificate
+RUN
+
+}
+
+colima_add_cert() {
+  local cert_name=$1
+  local cert
+  cert="$(get_cert "$cert_name")"
+
+  colima ssh -- <<RUN
+  mkdir -p ~/.docker/certs.d/
+  echo "$cert" > ~/.docker/certs.d/"$cert_name".crt
+  sudo su -
+  cd /usr/local/share/ca-certificates/
+  echo "$cert" > "$cert_name.crt"
+  cd -
+  [ ! -e .done ] && echo "$cert" >> /etc/ssl/certs/ca-certificates.crt && touch .done
+  update-ca-certificates && echo Done adding $cert_name certificate
+RUN
+
+}
+
+_docker_add_cert() {
+  local runtime="$1"
+  case "$runtime" in
+    podman)
+      shift 2
+      local cert_name=$1
+      podman_add_cert "$cert_name"
+      ;;
+    colima-containerd)
+      shift 2
+      local cert_name=$1
+      colima_add_cert "$cert_name"
+      ;;
+  esac
+}
+
+docker_add_cert() {
+  local runtime=$1
+
+  _docker_add_cert "$runtime" "$@"
+}
+
+main() {
+  if [[ "$#" -ne 1 ]]; then
+    echo "Usage: $0 cert_name"
+    exit 1
+  fi
+
+  docker_add_cert "${DOCKER_RUNTIME:-colima-containerd}" "$@"
+}
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+  main "$@"
+fi
