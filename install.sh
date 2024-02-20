@@ -41,6 +41,13 @@ config() {
      cp -r $file $HOME/.config/
    done
   popd
+
+  pushd bin
+    mkdir -p $HOME/.local/bin
+    for file in *; do
+      cp -r $file $HOME/.local/bin
+    done
+  popd
   
   pushd $HOME/.config/zsh
     bash install.sh
