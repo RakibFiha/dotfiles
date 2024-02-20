@@ -5,22 +5,26 @@ set -euo pipefail
 
 _docker() {
   local runtime="$1"
-  local status
+  local status docker_host
   case "$runtime" in
     podman)
       shift 2
+      type -p podman > /dev/null && status=0 || status=1
+      [[ $status == 1 ]] && echo "$runtime does not exist.. Exiting.." && exit 1;
+      docker_host="unix:///$HOME/.local/share/containers/podman/machine/podman-machine-default/podman.sock"
 
-      DOCKER_HOST="unix:///$HOME/.local/share/containers/podman/machine/podman-machine-default/podman.sock" podman "$@"
+      DOCKER_HOST="${DOCKER_HOST:-$docker_host}" podman "$@"
       ;;
     colima-containerd)
       shift 2
 
       type -p colima > /dev/null && status=0 || status=1
-      [[ $status == 1 ]] && exit 1;
+      [[ $status == 1 ]] && echo "$runtime does not exist.. Exiting.." && exit 1;
       type -p nerdctl > /dev/null && status=0 || status=1
       [[ $status == 1 ]] && colima nerdctl install 2> /dev/null;
+      docker_host="unix:///$HOME/.colima/docker.sock"
 
-      DOCKER_HOST="unix:///$HOME/.colima/docker.sock" nerdctl "$@"
+      DOCKER_HOST="${DOCKER_HOST:-$docker_host}" nerdctl "$@"
       ;;
   esac
 }
