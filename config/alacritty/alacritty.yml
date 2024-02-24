@@ -2,7 +2,7 @@ window:
   dimensions:
     columns: 140
     lines: 38
-  
+
   padding:
     x: 10
     y: 10
@@ -25,7 +25,7 @@ window:
   #
   # Window opacity as a floating point number from `0.0` to `1.0`.
   # The value `0.0` is completely transparent and `1.0` is opaque.
-  #opacity: 1.0
+  opacity: 0.969
 
   # Startup Mode (changes require restart)
   #

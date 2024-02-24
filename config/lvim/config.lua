@@ -11,6 +11,8 @@ vim.api.nvim_create_autocmd({"VimEnter"}, {callback = open_nvim_tree})
 lvim.icons.ui.Folder = "󰉋"
 lvim.builtin.nvimtree.setup.renderer.icons.glyphs.folder.default = lvim.icons.ui.Folder
 
+lvim.transparent_window = true
+
 lvim.plugins = {
 {
 "zbirenbaum/copilot.lua",
