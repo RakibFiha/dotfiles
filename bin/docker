@@ -1,59 +1,55 @@
 #!/usr/bin/env bash
-
-set -euo pipefail
 # For colima: colima start --runtime containerd
 # For podman: podman machine init && podman machine start and set DOCKER_RUNTIME=podman
-# For docker: set DOCKER_RUNTIME=/path/to/docker/executable
+# For docker: set DOCKER_RUNTIME=full/path/to/docker/executable
+
+runtime_exists() {
+  local status runtime
+  runtime="$1"
+  type -p "$runtime" > /dev/null && status=0 || status=1
+  if [[ $status == 1 ]]; then 
+    echo "Runtime: $runtime does not exist.." >&2 && return 1;
+  fi
+}
 
 _docker() {
   local runtime="$1"
-  local status docker_host script_path
+  local status docker_host
 
+  shift 2
   case "$runtime" in
     colima-containerd)
-      shift 2
-
-      type -p colima > /dev/null && status=0 || status=1
-      [[ $status == 1 ]] && echo "Runtime: $runtime does not exist.. Exiting.." && exit 1;
-      type -p nerdctl > /dev/null && status=0 || status=1
-      [[ $status == 1 ]] && colima nerdctl install 2> /dev/null;
+      ! runtime_exists colima && exit 1;
+      type -p nerdctl  > /dev/null || colima nerdctl install 2> /dev/null;
       docker_host="unix:///$HOME/.colima/docker.sock"
 
       DOCKER_HOST="${DOCKER_HOST:-$docker_host}" nerdctl "$@"
       ;;
     podman)
-      shift 2
-
-      type -p podman > /dev/null && status=0 || status=1
-      [[ $status == 1 ]] && echo "Runtime: $runtime does not exist.. Exiting.." && exit 1;
+      ! runtime_exists podman && exit 1;
       docker_host="unix:///$HOME/.local/share/containers/podman/machine/podman-machine-default/podman.sock"
 
       DOCKER_HOST="${DOCKER_HOST:-$docker_host}" podman "$@"
       ;;
     *)
-      shift 2
-
       if [[ -x "$runtime" ]]; then
-        if "$runtime" -v | awk '{print $1}' | grep -q '^Docker$'; then
+        if "$runtime" -v | awk '{print $1}' | grep -qi '^Docker$'; then
           "$runtime" "$@" && status=$? || status=$?
            exit "$status"
         fi
       fi
-        echo "Runtime: $runtime does not exist.. Exiting.." && exit 1;
+      echo "Runtime: $runtime does not exist.. Exiting.." && exit 1;
       ;;
   esac
 }
 
 docker() {
-  local runtime=$1
-
-  _docker "$runtime" "$@"
+  set -euo pipefail
+  _docker "$1" "$@"
 }
 
 main() {
   docker "${DOCKER_RUNTIME:-colima-containerd}" "$@"
 }
 
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-  main "$@"
-fi
+[[ "${BASH_SOURCE[0]}" == "$0" ]] && main "$@";
