@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# Author: rakibfiha
+# Usage: Save it to $HOME/.local/bin/docker and add this path to your $PATH
+# ENV: DOCKER_RUNTIME=podman|colima-containerd; Default: colima-containerd
 # For colima: colima start --runtime containerd
 # For podman: podman machine init && podman machine start and set DOCKER_RUNTIME=podman
 # For docker: set DOCKER_RUNTIME=full/path/to/docker/executable
@@ -43,13 +47,13 @@ _docker() {
   esac
 }
 
-docker() {
-  set -euo pipefail
-  _docker "$1" "$@"
+docker() {   
+  local runtime=$1
+  _docker "$runtime" "$@"
 }
 
 main() {
-  docker "${DOCKER_RUNTIME:-colima-containerd}" "$@"
+ set -euo pipefail && docker "${DOCKER_RUNTIME:-colima-containerd}" "$@"
 }
 
 [[ "${BASH_SOURCE[0]}" == "$0" ]] && main "$@";
