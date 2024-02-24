@@ -4,3 +4,4 @@ tmux/tmux-client-*.log
 
 bin/test.sh
 config/tmux/.tmux*.bak
+lsp-settings
