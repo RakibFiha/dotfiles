@@ -54,4 +54,3 @@ fallback()
 end
 end)
 lvim.builtin.cmp.mapping["<Tab>"] = on_tab
-

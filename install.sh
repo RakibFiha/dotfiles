@@ -38,14 +38,16 @@ install_lunarvim() {
 config() {
   pushd config
    for file in *; do
-     cp -r $file $HOME/.config/
+     rm -r "$HOME/.config/$file"
+     ln -nsf "$PWD/$file" "$HOME/.config/$file"
    done
   popd
 
   pushd bin
     mkdir -p $HOME/.local/bin
     for file in *; do
-      cp -r $file $HOME/.local/bin
+      rm "$HOME/.local/bin/$file"
+      ln -nsf "$PWD/$file" "$HOME/.local/bin/$file"
     done
   popd
   
