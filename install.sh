@@ -3,29 +3,32 @@
 set -euo pipefail
 
 install_neovim() {
+  local arch
   if [[ "$(uname)" == "Linux" ]]; then
-    local arch="linux$(uname -i | cut -d '_' -f2)"
+    arch="linux$(uname -i | cut -d '_' -f2)"
   elif [[ "$(uname)" == "Darwin" ]]; then
-    local arch="macos"
+    arch="macos"
   else
-    echo "uname: $(uname) not supported" &>2
+    echo "uname: $(uname) not supported" >&2
     exit 1
   fi
   local version="v0.9.5"
-  local url="https://github.com/neovim/neovim/releases/download/${version}/nvim-${arch}.tar.gz"
-  local tar_file="nvim-${arch}.tar.gz"
-  local tarred="nvim-${arch}"
+  local url="https://github.com/neovim/neovim/releases/download/$version/nvim-$arch.tar.gz"
+  local tar_file="nvim-$arch.tar.gz"
+  local tarred="nvim-$arch"
   local install_path="$HOME/.local/bin/"
-  local install_dir="$HOME/.local/bin/${tarred}"
+  local install_dir="$HOME/.local/bin/$tarred"
 
   mkdir -p .done
   pushd .done
-    curl -OL $url
-    [[ "$arch" == "macos" ]] && xattr -c ./${tar_file} ;
-    tar xzvf "${tar_file}"
-    [ -d "$install_dir" ] && rm -r "${install_dir}" ;
-    mv  "${tarred}" "${install_path}"
+    curl -OL "$url"
+    [[ "$arch" == "macos" ]] && xattr -c "$tar_file" ;
+    tar xzvf "$tar_file"
+    [ -d "$install_dir" ] && rm -r "$install_dir" ;
+    mv  "$tarred" "$install_path"
   popd
+
+  pip3 install -r requirements.txt
 
   rm -r .done
 }
@@ -59,9 +62,16 @@ config() {
 
   local walls_path="${MY_BACKGROUND_DIR:-$HOME/.local/share/backgrounds/}"
   mkdir -p "$walls_path"
-  cp -f share/backgrounds/bg.zip "$walls_path" 2>/dev/null
+
   pushd "$walls_path"
-    unzip bg.zip
+python3 - <<'RUNAS'
+import gdown
+id = "1HGrBguQaxfIJ76jwYINoxseTGBnt12td"
+output = "bg.zip"
+gdown.download(id=id, output=output)
+RUNAS
+
+   unzip bg.zip
   popd
 }
 
