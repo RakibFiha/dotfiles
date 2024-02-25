@@ -59,28 +59,22 @@ mkcd(){
 # https://apple.stackexchange.com/questions/410513/in-mac-how-to-do-tail-f-pid-to-terminate-after-process-exit-like-linux/410518#410518
 _tail(){
   # usage _tail <file> <pid>
+  local file=$1
+  local pid=$2
+  _tail::trap() { kill -- -$$ ; }
 
-  function _tail::trap() {
-    trap - SIGTERM && kill -- -$$
-  }
-
-  local FILE="$1"
-  local PID="$2"
-
-  if ps -p "$PID" > /dev/null; then
-    trap _tail::trap SIGINT
-    command tail -f "${FILE}" &
-    local pid=$!
-    disown # Optional: if you want to supress the kill SIGINT message
+  if ps -p "$pid" > /dev/null 2>&1; then
+    ( trap _tail::trap SIGINT
+    command tail -f "${file}" &
+    local tail_pid=$!
+    # disown # Supress the kill SIGINT message if not running in subshell
     local run=true
-
-    while ${run}; do
-      if ! $(ps -p ${PID} > /dev/null); then
-        kill -9 ${pid} > /dev/null 2>&1
-        run=false
-      fi
-    done
-
+      while $run; do
+        if ! $(ps -p $pid > /dev/null); then
+          kill -9 "$tail_pid" > /dev/null
+          run=false
+        fi
+      done; )
   else
     return 1
   fi
@@ -89,21 +83,16 @@ _tail(){
 tail(){
   # usage: tail -f <file> --pid=<pid>
   if (( $# > 0 )); then
-    local fFlag="$1"
-    local FILE="$2"
-    local PIDARGS="$3"
-    local PIDARG="$(echo ${PIDARGS} | cut -d '=' -f1)"
-    local PID="$(echo ${PIDARGS} | cut -d '=' -f2)"
-
-    if [[ "$fFlag" == "-f" ]] && [[ -f "${FILE}" ]] && \
-      [[ "${PIDARG}" == "--pid" ]] && [[ $(ps -p "${PID}") ]]; then
-      _tail "${FILE}" "${PID}"
-    else
-      command tail "$@"
-    fi
-
+    local flag=$1
+    local file=$2
+    local pidargs=$3
+    local pid="$(echo "$pidargs" | cut -d '=' -f2)"
+      case "$flag$pidargs" in
+        -f--pid=*) [[ -f "$file" ]] && [[ "$(ps -p "$pid" 2> /dev/null)" ]] && _tail "$file" "$pid" ;;
+        *) command tail "$@" ;;
+      esac
   else
-    tail < /dev/stdin 2>/dev/null
+    command tail < /dev/stdin 2>/dev/null
   fi
 }
 
