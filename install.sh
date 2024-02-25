@@ -43,6 +43,7 @@ config() {
    for file in *; do
      ln -nsf "$PWD/$file" "$HOME/.config/$file"
    done
+   find "$HOME/.config/" -maxdepth 1 -type l ! -exec test -e {} \; -exec unlink {} \;
   popd
 
   pushd bin
@@ -50,6 +51,7 @@ config() {
     for file in *; do
       ln -nsf "$PWD/$file" "$HOME/.local/bin/$file"
     done
+    find "$HOME/.local/bin" -maxdepth 1 -type l ! -exec test -e {} \; -exec unlink {} \;
   popd
   
   pushd "$HOME/.config/zsh"
