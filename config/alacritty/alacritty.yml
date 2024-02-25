@@ -57,6 +57,8 @@ window:
   # and `light`. Set this to `None` to use the default theme variant.
   #gtk_theme_variant: None
 
+  option_as_alt: OnlyLeft
+
 scrolling:
   # Maximum number of lines in the scrollback buffer.
   # Specifying '0' will disable scrolling.
@@ -815,6 +817,7 @@ key_bindings:
   #- { key: B,              mods: Command, mode: ~Search,     action: SearchBackward        }
 
   - { key: Return,   mods: Command,         action: ToggleSimpleFullscreen }
+  - { key: ¥, mods: Control,       chars: "\\"                          } # \
 
 #debug:
   # Display the time it takes to redraw each frame.
