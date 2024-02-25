@@ -1,0 +1,79 @@
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[colors.bright]
+blue = "#7aa6da"
+cyan = "#70c0b1"
+green = "#b9ca4a"
+magenta = "#c397d8"
+white = "#eaeaea"
+yellow = "#e7c547"
+
+[colors.normal]
+blue = "#81a2be"
+cyan = "#8abeb7"
+green = "#b5bd68"
+magenta = "#b294bb"
+white = "#c5c8c6"
+yellow = "#f0c674"
+
+[colors.primary]
+background = "#141414"
+bright_foreground = "#eaeaea"
+dim_foreground = "#828482"
+foreground = "#eff6ef"
+
+[colors.vi_mode_cursor]
+cursor = "CellForeground"
+text = "CellBackground"
+
+[cursor]
+blink_interval = 500
+
+[cursor.style]
+blinking = "On"
+shape = "Block"
+
+[font]
+size = 16.0
+
+[font.bold]
+style = "Semibold"
+
+[font.italic]
+style = "Italic"
+
+[font.normal]
+family = "SauceCodePro Nerd Font Mono"
+
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Semicolon"
+mods = "Command"
+
+[[keyboard.bindings]]
+action = "ToggleSimpleFullscreen"
+key = "Return"
+mods = "Command"
+
+[[keyboard.bindings]]
+chars = "\\"
+key = "¥"
+mods = "Control"
+
+[scrolling]
+history = 10000
+
+[window]
+decorations = "none"
+opacity = 0.969
+startup_mode = "Maximized"
+option_as_alt = "OnlyLeft"
+
+[window.dimensions]
+columns = 140
+lines = 38
+
+[window.padding]
+x = 10
+y = 10
