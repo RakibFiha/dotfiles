@@ -11,6 +11,7 @@ elif [[ "$(uname)" == "Darwin" ]]; then
   nvim_uname_arc="macos"
 fi
 export PATH=$PATH:$HOME/.local/bin/nvim-$nvim_uname_arc/bin
+export MY_BACKGROUND_DIR="$HOME/.local/share/backgrounds/"
 
 # open_tmux automatically and restore windows when terminal is opened
 export MY_TMUX_SESSION_NAME="rakib"

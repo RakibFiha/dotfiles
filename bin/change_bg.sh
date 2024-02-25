@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
 
 change_random_bg(){
+  local walls_path="${MY_BACKGROUND_DIR:-$HOME/.local/share/backgrounds}"
+  mkdir -p "$walls_path"
+
   if [[ "$(uname)" == "Linux" ]]; then
     local all_bg+=($(
-          for bg in $HOME/.local/share/backgrounds/*; do 
+          for bg in $walls_path/*; do 
             echo $bg; 
           done))
 
@@ -14,7 +17,6 @@ change_random_bg(){
     gsettings set org.gnome.desktop.background picture-uri file://"${rand_bg}"
 
   elif [[ "$(uname)" == "Darwin" ]]; then
-    walls_path="$HOME/Desktop/Wallpaper"
     walls=$(find ${walls_path} -type f -exec sh -c '
     mt=$(file --brief --mime-type "$0")
     [ -z "${mt#image/jpeg}" ] && printf "$0\n"

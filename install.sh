@@ -43,18 +43,25 @@ config() {
   popd
 
   pushd bin
-    mkdir -p $HOME/.local/bin
+    mkdir -p "$HOME/.local/bin"
     for file in *; do
       ln -nsf "$PWD/$file" "$HOME/.local/bin/$file"
     done
   popd
   
-  pushd $HOME/.config/zsh
+  pushd "$HOME/.config/zsh"
     bash install.sh
   popd
   
-  pushd $HOME/.config/tmux
+  pushd "$HOME/.config/tmux"
     bash install.sh
+  popd
+
+  local walls_path="${MY_BACKGROUND_DIR:-$HOME/.local/share/backgrounds/}"
+  mkdir -p "$walls_path"
+  cp -f share/backgrounds/bg.zip "$walls_path" 2>/dev/null
+  pushd "$walls_path"
+    unzip bg.zip
   popd
 }
 
