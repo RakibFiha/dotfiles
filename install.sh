@@ -40,10 +40,10 @@ install_lunarvim() {
 
 config() {
   pushd config
-   for file in *; do
-     ln -nsf "$PWD/$file" "$HOME/.config/$file"
-   done
-   find "$HOME/.config/" -maxdepth 1 -type l ! -exec test -e {} \; -exec unlink {} \;
+    for file in *; do
+      ln -nsf "$PWD/$file" "$HOME/.config/$file"
+    done
+    find "$HOME/.config/" -maxdepth 1 -type l ! -exec test -e {} \; -exec unlink {} \;
   popd
 
   pushd bin
@@ -67,28 +67,26 @@ config() {
   local walls_zip_name="bg.zip"
 
   pushd "$walls_path"
-  if [[ -e "$walls_zip_name" ]]; then
-     while true; do
-         read -rp "$walls_zip_name already exists. Replace? (y/N): " answer
-         answer=${answer:-N}
-         case "$answer" in
-             [Yy]*) echo "Yes, continuing to replace..." && break ;;
-             [Nn]*) echo "No, not replacing..." && break ;;
-             *) echo "Invalid input. Please enter 'y' or 'n'." ;;
-         esac
-     done
-  fi
-
-  if [[ ! -e "$walls_zip_name" ]] || [[ "$answer" =~ ^[Yy]$ ]]; then
-    python3 - <<RUNAS
+    if [[ -e "$walls_zip_name" ]]; then
+       while true; do
+           read -rp "$walls_zip_name already exists. Replace? (y/N): " answer
+           answer=${answer:-N}
+           case "$answer" in
+               [Yy]*) echo "Yes, continuing to replace..." && break ;;
+               [Nn]*) echo "No, not replacing..." && break ;;
+               *) echo "Invalid input. Please enter 'y' or 'n'." ;;
+           esac
+       done
+    fi
+    if [[ ! -e "$walls_zip_name" ]] || [[ "$answer" =~ ^[Yy]$ ]]; then
+      python3 - <<RUNAS
 import gdown
 id = "1HGrBguQaxfIJ76jwYINoxseTGBnt12td"
 output = "$walls_zip_name"
 gdown.download(id=id, output=output)
 RUNAS
-  fi
-
-   echo "Unzipping $walls_zip_name:" && unzip "$walls_zip_name"
+    fi
+    echo "Unzipping $walls_zip_name:" && unzip "$walls_zip_name"
   popd
 }
 
