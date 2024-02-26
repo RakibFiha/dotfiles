@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+VIM_DISTRO="${VIM_DISTRO:-lvim}"
+
+"$VIM_DISTRO" "$@"
