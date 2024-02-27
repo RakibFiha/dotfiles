@@ -39,5 +39,6 @@ cp .zshrc ~/.zshrc
 
 plugin_install_update "https://github.com/zsh-users/zsh-autosuggestions.git, $zsh_plugins/zsh-autosuggestions"\
                       "https://github.com/zdharma-continuum/fast-syntax-highlighting.git, $zsh_plugins/fast-syntax-highlighting"\
+                      "https://github.com/Aloxaf/fzf-tab, $zsh_plugins/fzf-tab"\
                       "https://github.com/marlonrichert/zsh-autocomplete.git, $zsh_plugins/zsh-autocomplete"\
                       "https://github.com/jeffreytse/zsh-vi-mode, $zsh_plugins/zsh-vi-mode"

@@ -75,6 +75,7 @@ plugins=(
   zsh-autosuggestions
   fast-syntax-highlighting
   zsh-autocomplete
+  fzf-tab
   zsh-vi-mode
 )
 

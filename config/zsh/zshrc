@@ -18,6 +18,7 @@ export TMUX_PLUGIN_MANAGER_PATH="~/.tmux/plugins"
 export MY_TMUX_CONF="$HOME/.config/tmux/tmux.conf"
 
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
+export FZF_DEFAULT_OPTS='--bind ctrl-j:down,ctrl-k:up'
 
 function open_tmux(){
     # https://unix.stackexchange.com/questions/43601/how-can-i-set-my-default-shell-to-start-up-tmux
