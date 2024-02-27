@@ -75,7 +75,7 @@ plugins=(
   zsh-autosuggestions
   fast-syntax-highlighting
   zsh-autocomplete
-  zsh-vim-mode
+  zsh-vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh

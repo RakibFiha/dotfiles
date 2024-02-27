@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-[ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.pre_install
-
 zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 zsh_plugins="$zsh_custom/plugins"
 
@@ -36,9 +34,10 @@ plugin_install_update() {
   popd || exit 1
 }
 
+[ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.pre_install
 cp .zshrc ~/.zshrc
 
 plugin_install_update "https://github.com/zsh-users/zsh-autosuggestions.git, $zsh_plugins/zsh-autosuggestions"\
                       "https://github.com/zdharma-continuum/fast-syntax-highlighting.git, $zsh_plugins/fast-syntax-highlighting"\
                       "https://github.com/marlonrichert/zsh-autocomplete.git, $zsh_plugins/zsh-autocomplete"\
-                      "https://github.com/softmoth/zsh-vim-mode.git, $zsh_plugins/zsh-vim-mode"
+                      "https://github.com/jeffreytse/zsh-vi-mode, $zsh_plugins/zsh-vi-mode"
