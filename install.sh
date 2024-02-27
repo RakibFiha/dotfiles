@@ -9,8 +9,7 @@ install_neovim() {
   elif [[ "$(uname)" == "Darwin" ]]; then
     arch="macos"
   else
-    echo "uname: $(uname) not supported" >&2
-    exit 1
+    echo "uname: $(uname) not supported" >&2 ; exit 1
   fi
   local version="v0.9.5"
   local url="https://github.com/neovim/neovim/releases/download/$version/nvim-$arch.tar.gz"
@@ -28,9 +27,7 @@ install_neovim() {
     mv  "$tarred" "$install_path"
   popd
 
-  pip3 install -r requirements.txt
-
-  rm -r .done
+  pip3 install -r requirements.txt && rm -r .done
 }
 
 install_lunarvim() {
@@ -39,6 +36,8 @@ install_lunarvim() {
 }
 
 config() {
+  git config --global core.editor 'vim -c "set fenc=utf-8"' 
+
   pushd config
     for file in *; do
       ln -nsf "$PWD/$file" "$HOME/.config/$file"
