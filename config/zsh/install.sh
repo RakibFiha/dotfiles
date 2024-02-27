@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 [ -f ~/.zshrc ] && mv ~/.zshrc ~/.zshrc.pre_install
 
 zsh_custom="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
