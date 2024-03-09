@@ -10,6 +10,7 @@ elif [[ "$(uname)" == "Darwin" ]]; then
 fi
 export PATH=$PATH:$HOME/.local/bin/nvim-$nvim_uname_arc/bin
 export MY_BACKGROUND_DIR="$HOME/.local/share/backgrounds/"
+export EDITOR=vim
 
 export MODULAR_HOME="$HOME/.modular"
 export PATH="$HOME/.modular/pkg/packages.modular.com_mojo/bin:$PATH"
