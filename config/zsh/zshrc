@@ -457,3 +457,24 @@ function random_strings(){
 
 ## ghidra
 function ghidra(){ ghidrarun; }
+
+## terraform show pretty output
+tfsum() {
+  terraform plan -json | jq --slurp --raw-output '
+    map(
+      select(.type == "planned_change") |
+        {
+          addr: .change.resource.addr,
+          action: .change.action
+        }
+    ) |
+    group_by(.action) |
+    map(
+      .[0].action as $action |
+      del (.[].action) |
+      map(.addr) |
+      "\($action) (\(. | length)):\n    \(map(.) | join("\n    "))\n"
+    ) |
+    .[]
+  '
+}
